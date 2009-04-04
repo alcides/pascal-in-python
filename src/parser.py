@@ -23,13 +23,6 @@ while 1 :
         if not tok :
                 break
         print tok
-   
-reserved = {
-   'if' : 'IF',
-   'then' : 'THEN',
-   'else' : 'ELSE',
-   'while' : 'WHILE'
-}
 
 def t_VAR(t):
     r'[a-zA-Z_][\w_]*'
