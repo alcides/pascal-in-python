@@ -1,33 +1,13 @@
-A = r'[aA]'
-B = r'[bB]'
-C = r'[cC]'
-D = r'[dD]'
-E = r'[eE]'
-F = r'[fF]'
-G = r'[gG]'
-H = r'[hH]'
-I = r'[iI]'
-J = r'[jJ]'
-K = r'[kK]'
-L = r'[lL]'
-M = r'[mM]'
-N = r'[nN]'
-O = r'[oO]'
-P = r'[pP]'
-Q = r'[qQ]'
-R = r'[rR]'
-S = r'[sS]'
-T = r'[tT]'
-U = r'[uU]'
-V = r'[vV]'
-W = r'[wW]'
-X = r'[xX]'
-Y = r'[yY]'
-Z = r'[zZ]'
 QUOTE = r'(\'|")'
 
 
 tokens = (
+
+	# assignment
+	'IDENTIFIER',
+	'ASSIGNMENT',
+	'SEMICOLON',
+	'COLON',
 
 	'COMMENT',
 
@@ -40,11 +20,10 @@ tokens = (
 	'BEGIN',
 	'END',
 	
-	# assignment
-	'IDENTIFIER',
-	'ASSIGNMENT',
-	'SEMICOLON',
-	'COLON',
+	# control flow
+	'IF',
+	'THEN',
+	'ELSE',
 	
 	# operations
 	'PLUS',
@@ -53,6 +32,14 @@ tokens = (
 	'DIVISION',
 	'DIV',
 	'MOD',
+	
+	# comparations
+	'EQ',
+	'NEQ',
+	'LT',
+	'GT',
+	'LTE',
+	'GTE',
 	
 	# functions
 	'LPAREN',
@@ -64,6 +51,13 @@ tokens = (
 	'REAL',
 	'INTEGER',
 	'STRING',
+	'CHAR',
+	
+	# types names
+	'TREAL',
+	'TINTEGER',
+	'TSTRING',
+	'TCHAR',
 	
 	#stdlib
 	'WRITE',
@@ -72,14 +66,8 @@ tokens = (
 
 
 # Regular statement rules for tokens.
-t_PROGRAM		= P+R+O+G+R+A+M
 t_DOT			= r"\."
 
-t_VAR			= V+A+R
-t_BEGIN			= B+E+G+I+N
-t_END			= E+N+D
-
-t_IDENTIFIER	= r"[a-zA-Z]([a-zA-Z0-9])*"
 t_ASSIGNMENT	= r":="
 t_SEMICOLON		= r";"
 t_COLON			= r":"
@@ -88,21 +76,46 @@ t_PLUS			= r"\+"
 t_MINUS			= r"\-"
 t_TIMES			= r"\*"
 t_DIVISION		= r"\\"
-t_DIV			= D+I+V
-t_MOD			= M+O+D
+
+t_EQ			= r"\="
+t_NEQ			= r"\<\>"
+t_LT			= r"\<"
+t_GT			= r"\>"
+t_LTE			= r"\<\="
+t_GTE			= r"\>\="
+
 
 t_LPAREN		= r"\("
 t_RPAREN		= r"\)"
-t_PROCEDURE		= P+R+O+C+E+D+U+R+E
-t_FUNCTION		= F+U+N+C+T+I+O+N
 
 t_REAL			= r"(\-)*[0-9]+\.[0-9]+"
 t_INTEGER		= r"(\-)*[0-9]+"
 
-t_WRITE			= W+R+I+T+E
-t_WRITELN		= W+R+I+T+E+L+N
+
+reserved_keywords = {
+	'program':	'PROGRAM',
+	'var':		'VAR',
+	'begin':	'BEGIN',
+	'end':		'END',
+	'if':		'IF',
+	'then':		'THEN',
+	'else':		'ELSE',
+	'div':		'DIV',
+	'mod':		'MOD',
+	'procedure':'PROCEDURE',
+	'function':	'FUNCTION'
+}
+
+def t_IDENTIFIER(t):
+	r"[a-zA-Z]([a-zA-Z0-9])*"
+	if t.value.lower() in reserved_keywords:
+		t.type = reserved_keywords[t.value.lower()]
+	return t
 
 
+def t_CHAR(t):
+	r"(\'([^\\\'])\')|(\"([^\\\"])\")"
+	return t
 
 def t_STRING(t): 
     r"(\"([^\\\"]|(\\.))*\")|(\'([^\\\']|(\\.))*\')"
@@ -130,8 +143,6 @@ def t_STRING(t):
 
 def t_COMMENT(t):
 	r"{[^}]*}"
-	return t
-
 
 def t_newline(t):
     r'\n+'

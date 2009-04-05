@@ -13,5 +13,6 @@ BEGIN
     i := 9933;      { valid integer number assigned to variable i }
     c := "1";       { valid character assigned to variable c }
     c := 'd';       { valid character assigned to variable c }
+	s := "alcides";
     WRITELN(c);     { c contains the value 'd' }
 END.
