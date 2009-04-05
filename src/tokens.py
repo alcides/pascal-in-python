@@ -24,6 +24,9 @@ tokens = (
 	'IF',
 	'THEN',
 	'ELSE',
+	'FOR',
+	'WHILE',
+	'REPEAT',
 	
 	# logic
 	'AND',
@@ -110,6 +113,9 @@ reserved_keywords = {
 	'if':		'IF',
 	'then':		'THEN',
 	'else':		'ELSE',
+	'for':		'FOR',
+	'while':	'WHILE',
+	'repeat':	'REPEAT',
 	
 	'and':		'AND',
 	'or':		'OR',
