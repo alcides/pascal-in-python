@@ -42,6 +42,10 @@ tokens = (
 	'IDENTIFIER',
 	'ASSIGNMENT',
 	'SEMICOLON',
+	
+	# functions
+	'LPAREN',
+	'RPAREN',
 
 	# types
 	'REAL',
@@ -66,11 +70,16 @@ t_IDENTIFIER	= r"[a-zA-Z]([a-zA-Z0-9])+"
 t_ASSIGNMENT	= r":="
 t_SEMICOLON		= r";"
 
+t_LPAREN		= r"\("
+t_RPAREN		= r"\)"
+
 t_REAL			= r"[0-9]+\.[0-9]+"
 t_INTEGER		= r"[0-9]+"
 
 t_WRITE			= W+R+I+T+E
 t_WRITELN		= W+R+I+T+E+L+N
+
+
 
 def t_STRING(t): 
     r'(\"|\')([^\\"]|(\\.))*(\"|\')' 
