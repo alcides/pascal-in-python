@@ -97,7 +97,7 @@ t_WRITELN		= W+R+I+T+E+L+N
 
 
 def t_STRING(t): 
-    r'(\"|\')([^\\"]|(\\.))*(\"|\')' 
+    r"(\"([^\\\"]|(\\.))*\")|(\'([^\\\']|(\\.))*\')"
     escaped = 0 
     str = t.value[1:-1] 
     new_str = "" 
@@ -122,6 +122,7 @@ def t_STRING(t):
 
 def t_COMMENT(t):
 	r"{[^}]*}"
+	return t
 
 
 def t_newline(t):
