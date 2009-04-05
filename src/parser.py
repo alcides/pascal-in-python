@@ -1,3 +1,4 @@
+import sys
 from ply import lex
 from tokens import *
 
@@ -12,19 +13,26 @@ def t_error(t):
 # Build the lexer
 lex.lex()
 
-# Get the input
-data = raw_input()
 
-lex.input(data)
+if __name__ == '__main__':
+	
+	if len(sys.argv) > 1:
+		f = open(sys.argv[1],"r")
+		data = f.read()
+		f.close()
+	else:
+		data = raw_input()
 
-# Tokenize
-while 1 :
-        tok = lex.token()
-        if not tok :
-                break
-        print tok
+	lex.input(data)
 
-def t_VAR(t):
-    r'[a-zA-Z_][\w_]*'
-    t.type = reserved.get(t.value,'ID')    # Check for reserved words
-    return t
+	# Tokenize
+	while 1 :
+	        tok = lex.token()
+	        if not tok :
+	                break
+	        print tok
+
+	def t_VAR(t):
+	    r'[a-zA-Z_][\w_]*'
+	    t.type = reserved.get(t.value,'ID')    # Check for reserved words
+	    return t
