@@ -46,6 +46,12 @@ tokens = (
 	'SEMICOLON',
 	'COLON',
 	
+	# operations
+	'PLUS',
+	'MINUS',
+	'TIMES',
+	'DIV',
+	
 	# functions
 	'LPAREN',
 	'RPAREN',
@@ -73,6 +79,11 @@ t_IDENTIFIER	= r"[a-zA-Z]([a-zA-Z0-9])*"
 t_ASSIGNMENT	= r":="
 t_SEMICOLON		= r";"
 t_COLON			= r":"
+
+t_PLUS			= r"\+"
+t_MINUS			= r"\-"
+t_TIMES			= r"\*"
+t_DIV			= r"\\"
 
 t_LPAREN		= r"\("
 t_RPAREN		= r"\)"
