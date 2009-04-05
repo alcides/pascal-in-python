@@ -1,6 +1,7 @@
 import sys
-from ply import lex
+from ply import yacc
 from tokens import *
+from rules import *
 
 # A string containing ignored characters (spaces and tabs).
 t_ignore  = ' \t'
@@ -11,7 +12,7 @@ def t_error(t):
 
 
 # Build the lexer
-lex.lex()
+yacc.yacc()
 
 
 if __name__ == '__main__':
@@ -23,16 +24,4 @@ if __name__ == '__main__':
 	else:
 		data = raw_input()
 
-	lex.input(data)
-
-	# Tokenize
-	while 1 :
-	        tok = lex.token()
-	        if not tok :
-	                break
-	        print tok
-
-	def t_VAR(t):
-	    r'[a-zA-Z_][\w_]*'
-	    t.type = reserved.get(t.value,'ID')    # Check for reserved words
-	    return t
+	yacc.parse(data)
