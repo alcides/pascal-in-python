@@ -50,11 +50,15 @@ tokens = (
 	'PLUS',
 	'MINUS',
 	'TIMES',
+	'DIVISION',
 	'DIV',
+	'MOD',
 	
 	# functions
 	'LPAREN',
 	'RPAREN',
+	'PROCEDURE',
+	'FUNCTION',
 
 	# types
 	'REAL',
@@ -83,10 +87,14 @@ t_COLON			= r":"
 t_PLUS			= r"\+"
 t_MINUS			= r"\-"
 t_TIMES			= r"\*"
-t_DIV			= r"\\"
+t_DIVISION		= r"\\"
+t_DIV			= D+I+V
+t_MOD			= M+O+D
 
 t_LPAREN		= r"\("
 t_RPAREN		= r"\)"
+t_PROCEDURE		= P+R+O+C+E+D+U+R+E
+t_FUNCTION		= F+U+N+C+T+I+O+N
 
 t_REAL			= r"(\-)*[0-9]+\.[0-9]+"
 t_INTEGER		= r"(\-)*[0-9]+"
