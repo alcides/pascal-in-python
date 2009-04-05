@@ -18,6 +18,28 @@ def p_block(t):
 	"""
 	pass
 	
+	
+def p_variable_declaration_part(t):
+	"""VAR variable_declaration_list
+	 |
+	"""
+	pass
+
+def p_variable_declaration_list(t):
+	"""variable_declaration_list : variable_declaration_list variable_declaration
+	 | variable_declaration
+	"""
+	pass
+
+def p_variable_declaration(t):
+	"""variable_declaration : IDENTIFIER COLON type SEMICOLON"""
+	pass
+	
+def p_type(t):
+	""" type : TREAL | TINTEGER | TCHAR | TSTRING """
+	pass
+	
+	
 def p_sign(t):
 	"""sign : PLUS
 	| MINUS
@@ -32,7 +54,10 @@ def p_sign(t):
 
 def p_assign_statement(t) :
 	'assign_statement : IDENTIFIER ASSIGNMENT statement'
-	__globals[t[1]] = t[3]
+	if t[1] in __globals:
+		__globals[t[1]][1] = t[3]
+	else:
+		raise TypeError("Variable %s not defined." % (t[1],))
 	
 def p_statement_plus(t) :
     'statement : statement PLUS statement'
