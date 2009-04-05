@@ -29,6 +29,8 @@ QUOTE = r'(\'|")'
 
 tokens = (
 
+	'COMMENT',
+
 	# main
 	'PROGRAM',
 	'DOT',
@@ -42,6 +44,7 @@ tokens = (
 	'IDENTIFIER',
 	'ASSIGNMENT',
 	'SEMICOLON',
+	'COLON',
 	
 	# functions
 	'LPAREN',
@@ -66,9 +69,10 @@ t_VAR			= V+A+R
 t_BEGIN			= B+E+G+I+N
 t_END			= E+N+D
 
-t_IDENTIFIER	= r"[a-zA-Z]([a-zA-Z0-9])+"
+t_IDENTIFIER	= r"[a-zA-Z]([a-zA-Z0-9])*"
 t_ASSIGNMENT	= r":="
 t_SEMICOLON		= r";"
+t_COLON			= r":"
 
 t_LPAREN		= r"\("
 t_RPAREN		= r"\)"
@@ -102,6 +106,12 @@ def t_STRING(t):
                 new_str += c 
     t.value = new_str 
     return t
+
+
+
+def t_COMMENT(t):
+	r"{[^}]*}"
+
 
 def t_newline(t):
     r'\n+'
