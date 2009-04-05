@@ -77,8 +77,8 @@ t_COLON			= r":"
 t_LPAREN		= r"\("
 t_RPAREN		= r"\)"
 
-t_REAL			= r"[0-9]+\.[0-9]+"
-t_INTEGER		= r"[0-9]+"
+t_REAL			= r"(\-)*[0-9]+\.[0-9]+"
+t_INTEGER		= r"(\-)*[0-9]+"
 
 t_WRITE			= W+R+I+T+E
 t_WRITELN		= W+R+I+T+E+L+N
