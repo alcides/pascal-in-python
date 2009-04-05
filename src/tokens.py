@@ -25,6 +25,11 @@ tokens = (
 	'THEN',
 	'ELSE',
 	
+	# logic
+	'AND',
+	'OR',
+	'NOT',
+	
 	# operations
 	'PLUS',
 	'MINUS',
@@ -44,6 +49,8 @@ tokens = (
 	# functions
 	'LPAREN',
 	'RPAREN',
+	'LBRACKET',
+	'RBRACKET',
 	'PROCEDURE',
 	'FUNCTION',
 
@@ -87,6 +94,8 @@ t_GTE			= r"\>\="
 
 t_LPAREN		= r"\("
 t_RPAREN		= r"\)"
+t_LBRACKET		= r"\["
+t_RBRACKET		= r"\]"
 
 t_REAL			= r"(\-)*[0-9]+\.[0-9]+"
 t_INTEGER		= r"(\-)*[0-9]+"
@@ -97,13 +106,25 @@ reserved_keywords = {
 	'var':		'VAR',
 	'begin':	'BEGIN',
 	'end':		'END',
+	
 	'if':		'IF',
 	'then':		'THEN',
 	'else':		'ELSE',
+	
+	'and':		'AND',
+	'or':		'OR',
+	'not':		'NOT',
+	
 	'div':		'DIV',
 	'mod':		'MOD',
+	
 	'procedure':'PROCEDURE',
-	'function':	'FUNCTION'
+	'function':	'FUNCTION',
+	
+	'real':		'TREAL',
+	'integer':	'TINTEGER',
+	'string':	'TSTRING',
+	'char':	'TCHAR',
 }
 
 def t_IDENTIFIER(t):
