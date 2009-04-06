@@ -11,8 +11,7 @@ def p_header(t):
 	pass
 	
 def p_block(t):
-	"""block : type_definition_part
-	 variable_declaration_part
+	"""block : variable_declaration_part
 	 procedure_and_function_declaration_part
 	 statement_part
 	"""
@@ -39,6 +38,45 @@ def p_type(t):
 	""" type : TREAL | TINTEGER | TCHAR | TSTRING """
 	pass
 	
+def p_procedure_and_function_declaration_part(t):
+	"""""" # TODO
+	pass
+	
+def p_statement_part(t):
+	"""statement_part : BEGIN statement_sequence END"""
+	pass
+	
+def p_statement_sequence(t):
+	"""statement_sequence : statement_sequence statement
+	 | statement"""
+	pass
+	
+def p_statement(t):
+	"""statement : open_statement
+	 | closed_statement"""
+	pass
+	
+def p_open_statement(t):
+	"""open_statement : open_with_statement
+	 | open_if_statement
+	 | open_while_statement
+	 | open_for_statement
+	"""
+	pass
+	
+def p_closed_statement(t):
+	"""closed_statement : assignment_statement
+	 | procedure_statement
+	 | compound_statement
+	 | case_statement
+	 | repeat_statement
+	 | closed_with_statement
+	 | closed_if_statement
+	 | closed_while_statement
+	 | closed_for_statement
+	 |
+	"""
+	pass
 	
 def p_sign(t):
 	"""sign : PLUS
