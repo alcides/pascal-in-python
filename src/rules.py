@@ -11,15 +11,13 @@ def p_header(t):
 	pass
 	
 def p_block(t):
-	"""block : variable_declaration_part
-	 procedure_and_function_declaration_part
-	 statement_part
+	"""block : variable_declaration_part procedure_and_function_declaration_part statement_part
 	"""
 	pass
 	
 	
 def p_variable_declaration_part(t):
-	"""VAR variable_declaration_list
+	"""variable_declaration_part : VAR variable_declaration_list
 	 |
 	"""
 	pass
@@ -35,11 +33,14 @@ def p_variable_declaration(t):
 	pass
 	
 def p_type(t):
-	""" type : TREAL | TINTEGER | TCHAR | TSTRING """
+	""" type : TREAL 
+	| TINTEGER
+	| TCHAR
+	| TSTRING """
 	pass
 	
 def p_procedure_and_function_declaration_part(t):
-	"""""" # TODO
+	""" procedure_and_function_declaration_part : """ # TODO
 	pass
 	
 def p_statement_part(t):
@@ -80,7 +81,10 @@ def p_closed_statement(t):
 	
 def p_assignment_statement(t):
 	"""assignment_statement : IDENTIFIER ASSIGNMENT expression"""
-	pass
+	#if t[1] in __globals:
+	#	__globals[t[1]][1] = t[3]
+	#else:
+	#	raise TypeError("Variable %s not defined." % (t[1],))
 	
 def p_expression(t):
 	"""expression : term
@@ -115,18 +119,6 @@ def p_element(t):
 	| LPAREN expression RPAREN
 	| NOT element
 	"""
-
-def p_assign_statement(t) :
-	'assign_statement : IDENTIFIER ASSIGNMENT statement'
-	if t[1] in __globals:
-		__globals[t[1]][1] = t[3]
-	else:
-		raise TypeError("Variable %s not defined." % (t[1],))
-	
-def p_statement_plus(t) :
-    'statement : statement PLUS statement'
-    t[0] = t[1] + t[3]
-
 
 def p_error(t):
     print "Syntax error in input!"
