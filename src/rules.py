@@ -78,10 +78,27 @@ def p_closed_statement(t):
 	"""
 	pass
 	
-def p_sign(t):
-	"""sign : PLUS
-	| MINUS
-	| TIMES
+def p_assignment_statement(t):
+	"""assignment_statement : IDENTIFIER ASSIGNMENT expression"""
+	pass
+	
+def p_expression(t):
+	"""expression : term
+	 | expression sign_weak term"""
+	pass
+
+def p_term(t):
+	"""term : element 
+	| term sign_strong element """
+	
+	
+def p_sign_weak(t):
+	"""sign_weak : PLUS
+	| MINUS"""
+	pass
+
+def p_sign_strong(t):
+	"""sign_strong : TIMES
 	| DIVISION
 	| DIV
 	| MOD
@@ -89,6 +106,15 @@ def p_sign(t):
 	pass
 
 
+def p_element(t):
+	"""element : IDENTIFIER
+	| REAL
+	| INTEGER
+	| STRING
+	| CHAR
+	| LPAREN expression RPAREN
+	| NOT element
+	"""
 
 def p_assign_statement(t) :
 	'assign_statement : IDENTIFIER ASSIGNMENT statement'
