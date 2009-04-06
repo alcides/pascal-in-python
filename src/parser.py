@@ -1,5 +1,5 @@
 import sys
-from ply import yacc
+from ply import yacc,lex
 from tokens import *
 from rules import *
 
@@ -24,4 +24,4 @@ if __name__ == '__main__':
 	else:
 		data = raw_input()
 
-	yacc.parse(data)
+	yacc.parse(data,lexer = lex.lex() )

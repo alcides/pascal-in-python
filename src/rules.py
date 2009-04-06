@@ -53,28 +53,18 @@ def p_statement_sequence(t):
 	pass
 	
 def p_statement(t):
-	"""statement : open_statement
-	 | closed_statement"""
-	pass
-	
-def p_open_statement(t):
-	"""open_statement : open_with_statement
-	 | open_if_statement
-	 | open_while_statement
-	 | open_for_statement
+	"""statement : assignment_statement
+	 | statement_part
+	 | """
 	"""
-	pass
-	
-def p_closed_statement(t):
-	"""closed_statement : assignment_statement
 	 | procedure_statement
-	 | compound_statement
-	 | case_statement
+		
+		case_statement
 	 | repeat_statement
-	 | closed_with_statement
-	 | closed_if_statement
-	 | closed_while_statement
-	 | closed_for_statement
+	 | with_statement
+	 | if_statement
+	 | while_statement
+	 | for_statement
 	 |
 	"""
 	pass
