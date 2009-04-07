@@ -52,8 +52,8 @@ tokens = (
 	# functions
 	'LPAREN',
 	'RPAREN',
-	'LBRACKET',
-	'RBRACKET',
+#	'LBRACKET',
+#	'RBRACKET',
 	'PROCEDURE',
 	'FUNCTION',
 
@@ -97,8 +97,8 @@ t_GTE			= r"\>\="
 
 t_LPAREN		= r"\("
 t_RPAREN		= r"\)"
-t_LBRACKET		= r"\["
-t_RBRACKET		= r"\]"
+#t_LBRACKET		= r"\["
+#t_RBRACKET		= r"\]"
 
 t_REAL			= r"(\-)*[0-9]+\.[0-9]+"
 t_INTEGER		= r"(\-)*[0-9]+"
@@ -176,6 +176,35 @@ def t_newline(t):
     t.lineno += len(t.value)
 
 
+# A string containing ignored characters (spaces and tabs).
+t_ignore  = ' \t'
+
+# Error handling rule
+def t_error(t):
+    print "Illegal character '%s'" % t.value[0]
 
 
+
+if __name__ == '__main__':
+	# Build the lexer
+	from ply import lex
+	import sys 
+	
+	lex.lex()
+	
+	if len(sys.argv) > 1:
+		f = open(sys.argv[1],"r")
+		data = f.read()
+		f.close()
+	else:
+		data = raw_input()
+	
+	lex.input(data)
+	
+	# Tokenize
+	while 1:
+	    tok = lex.token()
+	    if not tok: break      # No more input
+	    print tok
+	
 

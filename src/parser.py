@@ -3,13 +3,6 @@ from ply import yacc,lex
 from tokens import *
 from rules import *
 
-# A string containing ignored characters (spaces and tabs).
-t_ignore  = ' \t'
-
-# Error handling rule
-def t_error(t):
-    print "Illegal character '%s'" % t.value[0]
-
 
 # Build the lexer
 yacc.yacc()
