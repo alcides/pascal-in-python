@@ -13,3 +13,4 @@ h2. Bibliografia
 * "Compilador em python":http://linuxgazette.net/issue79/divakaran.html
 * "PLY docs":http://doc.gnu-darwin.org/ply/ply.html
 * "Pascal Compiler":http://www.moorecad.com/standardpascal/yacclex.html
+* "Compiling Little Languages in Python":http://pages.cpsc.ucalgary.ca/~aycock/spark/paper.pdf
