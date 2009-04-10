@@ -18,7 +18,7 @@ if __name__ == '__main__':
 		data = ""
 		while True:
 			try:
-				data = raw_input()
+				data += raw_input()
 			except:
 				break
 

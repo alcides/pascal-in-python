@@ -24,7 +24,7 @@ def p_variable_declaration_part(t):
 	pass
 
 def p_variable_declaration_list(t):
-	"""variable_declaration_list : variable_declaration_list variable_declaration
+	"""variable_declaration_list : variable_declaration variable_declaration_list
 	 | variable_declaration
 	"""
 	# function and procedure missing here
