@@ -106,4 +106,4 @@ def p_element(t):
 	pass
 
 def p_error(t):
-    print "Syntax error in input, in line %d!" % 0
+	print "Syntax error in input, in line %d!" % 0
