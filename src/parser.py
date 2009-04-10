@@ -15,6 +15,11 @@ if __name__ == '__main__':
 		data = f.read()
 		f.close()
 	else:
-		data = raw_input()
+		data = ""
+		while True:
+			try:
+				data = raw_input()
+			except:
+				break
 
-	yacc.parse(data,lexer = lex.lex() )
+	yacc.parse(data,lexer = lex.lex())
