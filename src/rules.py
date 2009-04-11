@@ -8,6 +8,8 @@ precedence = (
     ('left', 'PLUS', 'MINUS'),
     ('left', 'TIMES', 'DIVISION'),
     ('left', 'DIV', 'MOD'),
+    ('left', 'EQ', 'NEQ', 'LTE','LT','GT','GTE'),
+    ('left', 'OR', 'AND'),
 )
 
 
@@ -54,29 +56,34 @@ def p_statement_part(t):
 	pass
 	
 def p_statement_sequence(t):
-	"""statement_sequence : statement_sequence statement
-	 | statement"""
+	"""statement_sequence : statement SEMICOLON statement_sequence
+	 | statement SEMICOLON"""
 	pass
 	
 def p_statement(t):
 	"""statement : assignment_statement
 	 | statement_part
+	 | if_statement
 	 | """
 	"""
 	 | procedure_statement
-		
-		case_statement
+	 |	case_statement
 	 | repeat_statement
 	 | with_statement
-	 | if_statement
 	 | while_statement
 	 | for_statement
 	 |
 	"""
 	pass
 	
+	
+def p_if_statement(t):
+	"""if_statement : IF expression THEN statement ELSE statement
+	| IF expression THEN statement
+	"""
+	
 def p_assignment_statement(t):
-	"""assignment_statement : IDENTIFIER ASSIGNMENT expression SEMICOLON"""
+	"""assignment_statement : IDENTIFIER ASSIGNMENT expression"""
 	
 def p_expression(t):
 	"""expression : element
@@ -90,6 +97,14 @@ def p_sign(t):
 	| DIVISION
 	| DIV
 	| MOD
+	| AND
+	| OR
+	| EQ
+	| NEQ
+	| LT
+	| LTE
+	| GT
+	| GTE
 	"""
 	pass
 
