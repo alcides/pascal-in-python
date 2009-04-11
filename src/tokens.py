@@ -8,6 +8,7 @@ tokens = (
 	'ASSIGNMENT',
 	'SEMICOLON',
 	'COLON',
+	'COMMA',
 
 	'COMMENT',
 
@@ -29,6 +30,8 @@ tokens = (
 	'REPEAT',
 	'UNTIL',
 	'DO',
+	'TO',
+	'DOWNTO',
 	
 	# logic
 	'AND',
@@ -83,6 +86,7 @@ t_DOT			= r"\."
 t_ASSIGNMENT	= r":="
 t_SEMICOLON		= r";"
 t_COLON			= r":"
+t_COMMA			= r","
 
 t_PLUS			= r"\+"
 t_MINUS			= r"\-"
@@ -119,6 +123,8 @@ reserved_keywords = {
 	'while':	'WHILE',
 	'repeat':	'REPEAT',
 	'do':		'DO',
+	'to':		'TO',
+	'downto':	'DOWNTO',
 	'until':	'UNTIL',
 	
 	

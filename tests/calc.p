@@ -17,4 +17,6 @@ BEGIN
 		i := i - 1
 	UNTIL i < 0;
 	
+	for i := 1 to 10 do j := j + 2;
+	
 END.

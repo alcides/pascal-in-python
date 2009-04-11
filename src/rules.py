@@ -66,10 +66,10 @@ def p_statement(t):
 	 | if_statement
 	 | while_statement
 	 | repeat_statement
+	 | for_statement
 	 | """
 	"""
 	 | procedure_statement
-	 | for_statement
 	 |
 	"""
 	pass
@@ -87,6 +87,10 @@ def p_while_statement(t):
 def p_repeat_statement(t):
 	"""repeat_statement : REPEAT statement UNTIL expression"""
 	
+def p_for_statement(t):
+	"""for_statement : FOR assignment_statement TO expression DO statement
+	| FOR assignment_statement DOWNTO expression DO statement
+	"""
 	
 def p_assignment_statement(t):
 	"""assignment_statement : IDENTIFIER ASSIGNMENT expression"""
