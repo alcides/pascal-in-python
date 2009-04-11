@@ -9,4 +9,12 @@ BEGIN
 	  i := i + 1
 	else
 	  i := i * 2;
+	
+	WHILE i < 10 DO
+	i := i + i;
+	
+	REPEAT
+		i := i - 1
+	UNTIL i < 0;
+	
 END.

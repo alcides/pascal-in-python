@@ -57,20 +57,18 @@ def p_statement_part(t):
 	
 def p_statement_sequence(t):
 	"""statement_sequence : statement SEMICOLON statement_sequence
-	 | statement SEMICOLON"""
+	 | statement"""
 	pass
 	
 def p_statement(t):
 	"""statement : assignment_statement
 	 | statement_part
 	 | if_statement
+	 | while_statement
+	 | repeat_statement
 	 | """
 	"""
 	 | procedure_statement
-	 |	case_statement
-	 | repeat_statement
-	 | with_statement
-	 | while_statement
 	 | for_statement
 	 |
 	"""
@@ -81,6 +79,14 @@ def p_if_statement(t):
 	"""if_statement : IF expression THEN statement ELSE statement
 	| IF expression THEN statement
 	"""
+	
+def p_while_statement(t):
+	"""while_statement : WHILE expression DO statement"""
+	
+	
+def p_repeat_statement(t):
+	"""repeat_statement : REPEAT statement UNTIL expression"""
+	
 	
 def p_assignment_statement(t):
 	"""assignment_statement : IDENTIFIER ASSIGNMENT expression"""

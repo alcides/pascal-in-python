@@ -27,6 +27,8 @@ tokens = (
 	'FOR',
 	'WHILE',
 	'REPEAT',
+	'UNTIL',
+	'DO',
 	
 	# logic
 	'AND',
@@ -116,6 +118,9 @@ reserved_keywords = {
 	'for':		'FOR',
 	'while':	'WHILE',
 	'repeat':	'REPEAT',
+	'do':		'DO',
+	'until':	'UNTIL',
+	
 	
 	'and':		'AND',
 	'or':		'OR',
