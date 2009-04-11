@@ -1,7 +1,15 @@
 # PROGRAM HEADING
 
+# META
 
 #start = 'block'
+
+precedence = (
+    ('left', 'PLUS', 'MINUS'),
+    ('left', 'TIMES', 'DIVISION'),
+    ('left', 'DIV', 'MOD'),
+)
+
 
 def p_program_start(t):
 	'program : header SEMICOLON block DOT'
@@ -68,25 +76,17 @@ def p_statement(t):
 	pass
 	
 def p_assignment_statement(t):
-	"""assignment_statement : IDENTIFIER ASSIGNMENT expression"""
+	"""assignment_statement : IDENTIFIER ASSIGNMENT expression SEMICOLON"""
 	
 def p_expression(t):
-	"""expression : term
-	 | expression sign_weak term"""
+	"""expression : element
+	 | expression sign element"""
 	pass
 
-def p_term(t):
-	"""term : element 
-	| term sign_strong element """
-	
-	
-def p_sign_weak(t):
-	"""sign_weak : PLUS
-	| MINUS"""
-	pass
-
-def p_sign_strong(t):
-	"""sign_strong : TIMES
+def p_sign(t):
+	"""sign : PLUS
+	| MINUS
+	| TIMES
 	| DIVISION
 	| DIV
 	| MOD
