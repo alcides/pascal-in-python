@@ -1,6 +1,6 @@
 class Node(object):
-	def __init__(self, type, *args):
-		self.type = type
+	def __init__(self, t, *args):
+		self.type = t
 		self.args = args
 		
 	def __str__(self):

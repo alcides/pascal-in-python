@@ -22,7 +22,7 @@ def main():
 	yacc.yacc()
 	data = get_input()
 	ast =  yacc.parse(data,lexer = lex.lex())	
-	write_code(ast)
+	o = Writer()(ast)
 	
 if __name__ == '__main__':
 	main()

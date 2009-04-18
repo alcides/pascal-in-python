@@ -1,24 +1,16 @@
-class PObject(object):
-	def __getattr__(self, name):
-		return getattr(self.value,name)
+from llvm.core import *
+
+# auxiliary
+void = Type.void()
+boolean = Type.int(1)
+
+integer = Type.int()
+real  = Type.double()
+char = Type.int()
+string = lambda x: Type.array( integer, x )
+
+def function(rt,*args):
+	return Type.function(rt, args)
 	
-
-class PString(PObject):
-	def __init__(self,s):
-		self.type = "STRING"
-		self.value = str(s)
-		
-class PChar(PObject):
-	def __init__(self,s):
-		self.type = "CHAR"
-		self.value = str(s)[0]
-
-class PReal(PObject):
-	def __init__(self,s):
-		self.type = "REAL"
-		self.value = float(s)
-		
-class PInteger(PObject):
-	def __init__(self,s):
-		self.type = "INTEGER"
-		self.value = int(s)
+def procedure(*args):
+	return Type.function(void, args)
