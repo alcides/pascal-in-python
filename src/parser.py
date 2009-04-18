@@ -22,4 +22,4 @@ if __name__ == '__main__':
 			except:
 				break
 
-	yacc.parse(data,lexer = lex.lex())
+	print yacc.parse(data,lexer = lex.lex())

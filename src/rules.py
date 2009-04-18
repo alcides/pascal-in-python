@@ -1,4 +1,4 @@
-# PROGRAM HEADING
+from ast import Node
 
 # META
 
@@ -15,50 +15,57 @@ precedence = (
 
 def p_program_start(t):
 	'program : header SEMICOLON block DOT'
-	pass
+	t[0] = Node('program',t[1],t[3])
 
 def p_header(t):
 	'header : PROGRAM IDENTIFIER'
-	pass
+	t[0] = t[2]
 	
 def p_block(t):
 	"""block : variable_declaration_part statement_part
 	"""
-	pass
+	t[0] = Node('block',t[1],t[2])
 	
 	
 def p_variable_declaration_part(t):
 	"""variable_declaration_part : VAR variable_declaration_list
 	 |
 	"""
-	pass
+	if len(t) > 1:
+		t[0] = t[2]
 
 def p_variable_declaration_list(t):
 	"""variable_declaration_list : variable_declaration variable_declaration_list
 	 | variable_declaration
 	"""
 	# function and procedure missing here
-	pass
+	if len(t) == 2:
+		t[0] = t[1]
+	else:
+		t[0] = Node('var_list',t[1],t[2])
 
 def p_variable_declaration(t):
 	"""variable_declaration : IDENTIFIER COLON type SEMICOLON"""
-	pass
+	t[0] = Node('var',t[1],t[3])
 	
 def p_type(t):
 	""" type : TREAL 
 	| TINTEGER
 	| TCHAR
 	| TSTRING """
-	pass
+	t[0] = Node('type',t[1])
 	
 def p_statement_part(t):
 	"""statement_part : BEGIN statement_sequence END"""
-	pass
+	t[0] = t[2]
 	
 def p_statement_sequence(t):
 	"""statement_sequence : statement SEMICOLON statement_sequence
 	 | statement"""
-	pass
+	if len(t) == 2:
+		t[0] = t[1]
+	else:
+		t[0] = Node('statement_list',t[1],t[3])
 	
 def p_statement(t):
 	"""statement : assignment_statement
@@ -72,7 +79,8 @@ def p_statement(t):
 	 | procedure_statement
 	 |
 	"""
-	pass
+	if len(t) > 1:
+		t[0] = t[1]
 	
 	
 def p_if_statement(t):
@@ -80,25 +88,37 @@ def p_if_statement(t):
 	| IF expression THEN statement
 	"""
 	
+	if len(t) == 5:
+		t[0] = Node('if',t[2],t[4])
+	else:
+		t[0] = Node('ifelse',t[2],t[4],t[6])
+	
 def p_while_statement(t):
 	"""while_statement : WHILE expression DO statement"""
+	t[0] = Node('while',t[2],t[4])
 	
 	
 def p_repeat_statement(t):
 	"""repeat_statement : REPEAT statement UNTIL expression"""
+	t[0] = Node('repeat',t[2],t[4])
 	
 def p_for_statement(t):
 	"""for_statement : FOR assignment_statement TO expression DO statement
 	| FOR assignment_statement DOWNTO expression DO statement
 	"""
+	t[0] = Node('for',t[2],t[3],t[4],t[6])
 	
 def p_assignment_statement(t):
 	"""assignment_statement : IDENTIFIER ASSIGNMENT expression"""
+	t[0] = Node('assign',t[1],t[2])
 	
 def p_expression(t):
 	"""expression : element
 	 | expression sign element"""
-	pass
+	if len(t) == 2:
+		t[0] = t[1]
+	else:
+		t[0] = Node('sign',t[1],t[2],t[3])
 
 def p_sign(t):
 	"""sign : PLUS
@@ -116,7 +136,7 @@ def p_sign(t):
 	| GT
 	| GTE
 	"""
-	pass
+	t[0] = t[1]
 
 
 def p_element(t):
@@ -128,7 +148,14 @@ def p_element(t):
 	| LPAREN expression RPAREN
 	| NOT element
 	"""
-	pass
+	if len(t) == 2:
+		t[0] = t[1]
+	elif len(t) == 3:
+		# not e
+		t[0] = Node('not',t[2])
+	else:
+		# ( e )
+		t[0] = t[2]
 
 def p_error(t):
 	print "Syntax error in input, in line %d!" % 0
