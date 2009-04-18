@@ -118,7 +118,7 @@ def p_expression(t):
 	if len(t) == 2:
 		t[0] = t[1]
 	else:
-		t[0] = Node('sign',t[1],t[2],t[3])
+		t[0] = Node('op',t[1],t[2],t[3])
 
 def p_sign(t):
 	"""sign : PLUS

@@ -2,14 +2,9 @@ import sys
 from ply import yacc,lex
 from tokens import *
 from rules import *
+from builder import *
 
-
-# Build the lexer
-yacc.yacc()
-
-
-if __name__ == '__main__':
-	
+def get_input():
 	if len(sys.argv) > 1:
 		f = open(sys.argv[1],"r")
 		data = f.read()
@@ -21,5 +16,13 @@ if __name__ == '__main__':
 				data += raw_input() + "\n"
 			except:
 				break
+	return data
 
-	print yacc.parse(data,lexer = lex.lex())
+def main():
+	yacc.yacc()
+	data = get_input()
+	ast =  yacc.parse(data,lexer = lex.lex())	
+	write_code(ast)
+	
+if __name__ == '__main__':
+	main()
