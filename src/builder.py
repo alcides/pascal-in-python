@@ -2,8 +2,9 @@ from llvm import *
 from llvm.core import *
 import ptypes as types
 
-class Writer(object):
+# http://mdevan.nfshost.com/llvm-py/userguide.html#install
 
+class Writer(object):
 
 	def descend(self,node):
 		pass
