@@ -73,10 +73,6 @@ tokens = (
 	'TINTEGER',
 	'TSTRING',
 	'TCHAR',
-	
-	#stdlib
-	'WRITE',
-	'WRITELN'
 )
 
 
