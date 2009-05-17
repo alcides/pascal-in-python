@@ -31,7 +31,7 @@ if True:# m.verify() is None:
 	m.to_bitcode(file("test.bc", "w"))
 	import os
 	#os.system("llvm-as test.bc | opt -std-compile-opts -f > test_opt.bc")
-	os.system("lli test.bc > success.txt")
+	#os.system("lli test.bc > success.txt")
 	#os.system("llc test.bc -o program.c")
 	#os.system("gcc program.c -o a.out")
 else:

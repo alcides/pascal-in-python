@@ -14,3 +14,16 @@ function = Type.function
 
 def procedure(*args):
 	return Type.function(void, args)
+	
+	
+translation = {
+	"INTEGER": integer,
+	"REAL": real,
+	"CHAR": char
+}
+
+defaults = {
+	"INTEGER": 0,
+	"REAL": 0,
+	"CHAR": '_'
+}

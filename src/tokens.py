@@ -204,7 +204,12 @@ if __name__ == '__main__':
 		data = f.read()
 		f.close()
 	else:
-		data = raw_input()
+		data = ""
+		while 1:
+			try:
+				data += raw_input() + "\n"
+			except:
+				break
 	
 	lex.input(data)
 	

@@ -18,13 +18,13 @@ def p_program_start(t):
 	t[0] = Node('program',t[1],t[3])
 
 def p_header(t):
-	'header : PROGRAM IDENTIFIER'
+	'header : PROGRAM identifier'
 	t[0] = t[2]
 	
 def p_block(t):
 	"""block : variable_declaration_part procedure_or_function statement_part
 	"""
-	t[0] = Node('block',t[1],t[2])
+	t[0] = Node('block',t[1],t[2],t[3])
 	
 	
 def p_variable_declaration_part(t):
@@ -45,7 +45,7 @@ def p_variable_declaration_list(t):
 		t[0] = Node('var_list',t[1],t[2])
 
 def p_variable_declaration(t):
-	"""variable_declaration : IDENTIFIER COLON type SEMICOLON"""
+	"""variable_declaration : identifier COLON type SEMICOLON"""
 	t[0] = Node('var',t[1],t[3])
 	
 	
@@ -70,8 +70,8 @@ def p_procedure_declaration(t):
 		
 		
 def p_procedure_heading(t):
-	""" procedure_heading : PROCEDURE IDENTIFIER 
-	| PROCEDURE IDENTIFIER LPAREN parameter_list RPAREN"""
+	""" procedure_heading : PROCEDURE identifier 
+	| PROCEDURE identifier LPAREN parameter_list RPAREN"""
 	
 	if len(t) == 3:
 		t[0] = Node("procedure_head",t[2])
@@ -86,8 +86,8 @@ def p_function_declaration(t):
 	
 def p_function_heading(t):
 	""" function_heading : FUNCTION type
-	 	| FUNCTION IDENTIFIER COLON type
-		| FUNCTION IDENTIFIER LPAREN parameter_list RPAREN COLON type"""
+	 	| FUNCTION identifier COLON type
+		| FUNCTION identifier LPAREN parameter_list RPAREN COLON type"""
 	if len(t) == 3:
 		t[0] = Node("function_head",t[2])
 	elif len(t) == 5:
@@ -105,7 +105,7 @@ def p_parameter_list(t):
 		t[0] = t[1]
 		
 def p_parameter(t):
-	""" parameter : IDENTIFIER COLON type"""
+	""" parameter : identifier COLON type"""
 	t[0] = Node("parameter", t[1], t[3])
 
 def p_type(t):
@@ -142,8 +142,8 @@ def p_statement(t):
 	
 	
 def p_procedure_or_function_call(t):
-	""" procedure_or_function_call : IDENTIFIER LPAREN param_list RPAREN
-	| IDENTIFIER """
+	""" procedure_or_function_call : identifier LPAREN param_list RPAREN
+	| identifier """
 	
 	if len(t) == 2:
 		t[0] = Node("function_call", t[1])
@@ -189,7 +189,7 @@ def p_for_statement(t):
 	t[0] = Node('for',t[2],t[3],t[4],t[6])
 	
 def p_assignment_statement(t):
-	"""assignment_statement : IDENTIFIER ASSIGNMENT expression"""
+	"""assignment_statement : identifier ASSIGNMENT expression"""
 	t[0] = Node('assign',t[1],t[2])
 	
 def p_expression(t):
@@ -220,17 +220,17 @@ def p_sign(t):
 
 
 def p_element(t):
-	"""element : IDENTIFIER
-	| REAL
-	| INTEGER
-	| STRING
-	| CHAR
+	"""element : identifier
+	| real
+	| integer
+	| string
+	| char
 	| LPAREN expression RPAREN
 	| NOT element
 	| function_call_inline
 	"""
 	if len(t) == 2:
-		t[0] = t[1]
+		t[0] = Node("element",t[1])
 	elif len(t) == 3:
 		# not e
 		t[0] = Node('not',t[2])
@@ -239,9 +239,28 @@ def p_element(t):
 		t[0] = Node('element',t[2])
 		
 def p_function_call_inline(t):
-	""" function_call_inline : IDENTIFIER param_list"""
+	""" function_call_inline : identifier param_list"""
 	t[0] = Node('function_call_inline',t[1],t[2])
 	
+def p_identifier(t):
+	""" identifier : IDENTIFIER """
+	t[0] = Node('identifier',t[1])
+	
+def p_real(t):
+	""" real : REAL """
+	t[0] = Node('real',t[1])
+	
+def p_integer(t):
+	""" integer : INTEGER """
+	t[0] = Node('integer',t[1])
+
+def p_string(t):
+	""" string : STRING """
+	t[0] = Node('string',t[1])
+
+def p_char(t):
+	""" char : CHAR """
+	t[0] = Node('char',t[1])
 
 def p_error(t):
 	print "Syntax error in input, in line %d!" % t.lineno
