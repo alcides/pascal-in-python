@@ -71,12 +71,12 @@ def p_procedure_declaration(t):
 		
 def p_procedure_heading(t):
 	""" procedure_heading : PROCEDURE IDENTIFIER 
-	| PROCEDURE IDENTIFIER parameter_list """
+	| PROCEDURE IDENTIFIER LPAREN parameter_list RPAREN"""
 	
 	if len(t) == 3:
 		t[0] = Node("procedure_head",t[2])
 	else:
-		t[0] = Node("procedure_head",t[2],t[3])
+		t[0] = Node("procedure_head",t[2],t[4])
 		
 		
 def p_function_declaration(t):
@@ -85,48 +85,29 @@ def p_function_declaration(t):
 	
 	
 def p_function_heading(t):
-	""" function_heading : FUNCTION IDENTIFIER
-	 	| FUNCTION IDENTIFIER COLON IDENTIFIER
-		| FUNCTION IDENTIFIER parameter_list COLON IDENTIFIER"""
+	""" function_heading : FUNCTION type
+	 	| FUNCTION IDENTIFIER COLON type
+		| FUNCTION IDENTIFIER LPAREN parameter_list RPAREN COLON type"""
 	if len(t) == 3:
 		t[0] = Node("function_head",t[2])
 	elif len(t) == 5:
 		t[0] = Node("function_head",t[2],t[3])
 	else:
-		t[0] = Node("function_head",t[2],t[3],t[5])
+		t[0] = Node("function_head",t[2],t[4],t[7])
 
-def p_parameter_list(t):
-	""" parameter_list : LPAREN inside_parameter_list RPAREN"""
-	t[0] = t[2]
 	
-def p_inside_parameter_list(t):
-	""" inside_parameter_list : parameter SEMICOLON inside_parameter_list
-	| parameter SEMICOLON"""
+def p_parameter_list(t):
+	""" parameter_list : parameter COMMA parameter_list
+	| parameter"""
 	if len(t) == 4:
 		t[0] = Node("parameter_list", t[1], t[3])
 	else:
 		t[0] = t[1]
 		
 def p_parameter(t):
-	""" parameter : identifier_list COLON IDENTIFIER
-	 	| VAR identifier_list COLON IDENTIFIER
-		| procedure_heading
-		| function_heading"""
-	if len(t) == 2:
-		t[0] = t[1]
-	elif len(t) == 4:
-		t[0] = Node("parameter", t[1],t[3])
-	else:
-		t[0] = Node("parameter_var", t[2], t[4])
+	""" parameter : IDENTIFIER COLON type"""
+	t[0] = Node("parameter", t[1], t[3])
 
-def p_identifier_list(t):
-	""" identifier_list : identifier_list COMMA IDENTIFIER
-	| IDENTIFIER """
-	if len(t)==2:
-		t[0] = t[1]
-	else:
-		t[0] = Node("identifier_list",t[1],t[3])
-	
 def p_type(t):
 	""" type : TREAL 
 	| TINTEGER
@@ -165,7 +146,7 @@ def p_procedure_or_function_call(t):
 	| IDENTIFIER """
 	
 	if len(t) == 2:
-		t[0] = Node("procedure_call", t[1])
+		t[0] = Node("function_call", t[1])
 	else:
 		t[0] = Node("function_call",t[1],t[3])
 
@@ -178,16 +159,8 @@ def p_param_list(t):
 		t[0] = Node("parameter_list",t[1],t[3])
 
 def p_param(t):
-	""" param : expression
-	| expression COLON expression
-	| expression COLON expression COLON expression """
-	
-	if len(t) == 2:
-		t[0] = Node("parameter",t[1])
-	elif len(t) == 4:
-		t[0] = Node("parameter",t[1],t[3])
-	else:
-		t[0] = Node("parameter",t[1],t[3],t[5])
+	""" param : expression """
+	t[0] = Node("parameter",t[1])
 
 	
 def p_if_statement(t):
@@ -243,7 +216,7 @@ def p_sign(t):
 	| GT
 	| GTE
 	"""
-	t[0] = t[1]
+	t[0] = Node('sign',t[1])
 
 
 def p_element(t):
@@ -254,6 +227,7 @@ def p_element(t):
 	| CHAR
 	| LPAREN expression RPAREN
 	| NOT element
+	| function_call_inline
 	"""
 	if len(t) == 2:
 		t[0] = t[1]
@@ -262,7 +236,12 @@ def p_element(t):
 		t[0] = Node('not',t[2])
 	else:
 		# ( e )
-		t[0] = t[2]
+		t[0] = Node('element',t[2])
+		
+def p_function_call_inline(t):
+	""" function_call_inline : IDENTIFIER param_list"""
+	t[0] = Node('function_call_inline',t[1],t[2])
+	
 
 def p_error(t):
 	print "Syntax error in input, in line %d!" % t.lineno

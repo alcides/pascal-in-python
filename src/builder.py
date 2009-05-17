@@ -17,8 +17,8 @@ class Writer(object):
 
 	def __call__(self,ast):
 		
-		if ast is not Node:
-			return "error"
+		if ast.__class__ != Node:
+			return "error", ast
 		
 		if ast.type == "program":
 			mod_name = ast.args[0]

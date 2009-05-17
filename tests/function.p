@@ -9,7 +9,7 @@ var
 		writeln (A) 
 	end; 
 
-	function Summation (num : integer) : integer; 
+	function Summation(num : integer) : integer;
 	begin
 		if num = 1 then 
 			Summation := 1 
