@@ -74,14 +74,91 @@ def p_statement(t):
 	 | while_statement
 	 | repeat_statement
 	 | for_statement
-	 | """
-	"""
-	 | procedure_statement
+	 | procedure_or_function
 	 |
 	"""
 	if len(t) > 1:
 		t[0] = t[1]
 	
+	
+def p_procedure_or_function(t):
+	"""procedure_or_function : proc_or_func_declaration SEMICOLON procedure_or_function
+		| proc_or_func_declaration SEMICOLON"""
+		
+	if len(t) == 4:
+		t[0] = Node('function_list',t[1],t[2])
+	else:
+		t[0] = t[1]
+		
+		
+def p_proc_or_func_declaration(t):
+	""" proc_or_func_declaration : procedure_declaration
+               | function_declaration """
+	t[0] = t[1]
+		
+		
+def p_procedure_declaration(t):
+	"""procedure_declaration : procedure_heading SEMICOLON block"""
+	t[0] = Node("procedure",t[1],t[3])
+		
+		
+def p_procedure_heading(t):
+	""" procedure_heading : PROCEDURE IDENTIFIER 
+	| PROCEDURE IDENTIFIER parameter_list """
+	
+	if len(t) == 3:
+		t[0] = Node("procedure_head",t[2])
+	else:
+		t[0] = Node("procedure_head",t[2],t[3])
+		
+		
+def p_function_declaration(t):
+	""" function_declaration : function_heading SEMICOLON block"""
+	t[0] = Node('function',t[1],t[3])
+	
+	
+def p_function_heading(t):
+	""" function_heading : FUNCTION IDENTIFIER
+	 	| FUNCTION IDENTIFIER COLON IDENTIFIER
+		| FUNCTION IDENTIFIER parameter_list COLON IDENTIFIER"""
+	if len(t) == 3:
+		t[0] = Node("function_head",t[2])
+	elif len(t) == 5:
+		t[0] = Node("function_head",t[2],t[3])
+	else:
+		t[0] = Node("function_head",t[2],t[3],t[5])
+
+def p_parameter_list(t):
+	""" parameter_list : LPAREN inside_parameter_list RPAREN"""
+	t[0] = t[2]
+	
+def p_inside_parameter_list(t):
+	""" inside_parameter_list : parameter SEMICOLON inside_parameter_list
+	| parameter SEMICOLON"""
+	if len(t) == 4:
+		t[0] = Node("parameter_list", t[1], t[3])
+	else:
+		t[0] = t[1]
+		
+def p_parameter(t):
+	""" parameter : identifier_list COLON IDENTIFIER
+	 	| VAR identifier_list COLON IDENTIFIER
+		| procedure_heading
+		| function_heading"""
+	if len(t) == 2:
+		t[0] = t[1]
+	elif len(t) == 4:
+		t[0] = Node("parameter", t[1],t[3])
+	else:
+		t[0] = Node("parameter_var", t[2], t[4])
+
+def p_identifier_list(t):
+	""" identifier_list : identifier_list COMMA IDENTIFIER
+	| IDENTIFIER """
+	if len(t)==2:
+		t[0] = t[1]
+	else:
+		t[0] = Node("identifier_list",t[1],t[3])
 	
 def p_if_statement(t):
 	"""if_statement : IF expression THEN statement ELSE statement
