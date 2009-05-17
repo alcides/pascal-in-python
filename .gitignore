@@ -1,3 +1,4 @@
 *.pyc
 *.out
 parsetab*
+.DS_Store
