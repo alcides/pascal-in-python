@@ -180,7 +180,7 @@ def t_COMMENT(t):
 
 def t_newline(t):
     r'\n+'
-    t.lineno += len(t.value)
+    t.lexer.lineno += len(t.value)
 
 
 # A string containing ignored characters (spaces and tabs).

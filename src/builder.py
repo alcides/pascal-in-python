@@ -2,6 +2,7 @@ from llvm import *
 from llvm.core import *
 import ptypes as types
 from codegen import *
+from ast import Node
 
 # http://mdevan.nfshost.com/llvm-py/userguide.html#install
 
@@ -15,8 +16,16 @@ class Writer(object):
 
 
 	def __call__(self,ast):
+		
+		if ast is not Node:
+			return "error"
+		
 		if ast.type == "program":
-			self.module = Module.new(ast.args[0])
+			mod_name = ast.args[0]
+			if not mod_name:
+				mod_name = "pascal_program"
+			
+			self.module = Module.new(mod_name)
 			stdio = add_stdio(self.module)
 			for f in stdio:
 				self.functions[f] = stdio[f]
@@ -27,7 +36,7 @@ class Writer(object):
 			self.descend(ast.args[0]) # Var
 			self.descend(ast.args[1]) # Statement
 			
-		return self
+		return self.module
 		
 
 if __name__ == '__main__':

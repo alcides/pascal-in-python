@@ -22,7 +22,7 @@ def p_header(t):
 	t[0] = t[2]
 	
 def p_block(t):
-	"""block : variable_declaration_part statement_part
+	"""block : variable_declaration_part procedure_or_function statement_part
 	"""
 	t[0] = Node('block',t[1],t[2])
 	
@@ -48,47 +48,14 @@ def p_variable_declaration(t):
 	"""variable_declaration : IDENTIFIER COLON type SEMICOLON"""
 	t[0] = Node('var',t[1],t[3])
 	
-def p_type(t):
-	""" type : TREAL 
-	| TINTEGER
-	| TCHAR
-	| TSTRING """
-	t[0] = Node('type',t[1])
-	
-def p_statement_part(t):
-	"""statement_part : BEGIN statement_sequence END"""
-	t[0] = t[2]
-	
-def p_statement_sequence(t):
-	"""statement_sequence : statement SEMICOLON statement_sequence
-	 | statement"""
-	if len(t) == 2:
-		t[0] = t[1]
-	else:
-		t[0] = Node('statement_list',t[1],t[3])
-	
-def p_statement(t):
-	"""statement : assignment_statement
-	 | statement_part
-	 | if_statement
-	 | while_statement
-	 | repeat_statement
-	 | for_statement
-	 | procedure_or_function
-	 |
-	"""
-	if len(t) > 1:
-		t[0] = t[1]
 	
 	
 def p_procedure_or_function(t):
 	"""procedure_or_function : proc_or_func_declaration SEMICOLON procedure_or_function
-		| proc_or_func_declaration SEMICOLON"""
+		| """
 		
 	if len(t) == 4:
 		t[0] = Node('function_list',t[1],t[2])
-	else:
-		t[0] = t[1]
 		
 		
 def p_proc_or_func_declaration(t):
@@ -159,6 +126,69 @@ def p_identifier_list(t):
 		t[0] = t[1]
 	else:
 		t[0] = Node("identifier_list",t[1],t[3])
+	
+def p_type(t):
+	""" type : TREAL 
+	| TINTEGER
+	| TCHAR
+	| TSTRING """
+	t[0] = Node('type',t[1])
+	
+def p_statement_part(t):
+	"""statement_part : BEGIN statement_sequence END"""
+	t[0] = t[2]
+	
+def p_statement_sequence(t):
+	"""statement_sequence : statement SEMICOLON statement_sequence
+	 | statement"""
+	if len(t) == 2:
+		t[0] = t[1]
+	else:
+		t[0] = Node('statement_list',t[1],t[3])
+	
+def p_statement(t):
+	"""statement : assignment_statement
+	 | statement_part
+	 | if_statement
+	 | while_statement
+	 | repeat_statement
+	 | for_statement
+	 | procedure_or_function_call
+	 |
+	"""
+	if len(t) > 1:
+		t[0] = t[1]
+	
+	
+def p_procedure_or_function_call(t):
+	""" procedure_or_function_call : IDENTIFIER LPAREN param_list RPAREN
+	| IDENTIFIER """
+	
+	if len(t) == 2:
+		t[0] = Node("procedure_call", t[1])
+	else:
+		t[0] = Node("function_call",t[1],t[3])
+
+def p_param_list(t):
+	""" param_list : param_list COMMA param
+	 | param """
+	if len(t) == 2:
+		t[0] = t[1]
+	else:
+		t[0] = Node("parameter_list",t[1],t[3])
+
+def p_param(t):
+	""" param : expression
+	| expression COLON expression
+	| expression COLON expression COLON expression """
+	
+	if len(t) == 2:
+		t[0] = Node("parameter",t[1])
+	elif len(t) == 4:
+		t[0] = Node("parameter",t[1],t[3])
+	else:
+		t[0] = Node("parameter",t[1],t[3],t[5])
+
 	
 def p_if_statement(t):
 	"""if_statement : IF expression THEN statement ELSE statement
@@ -235,4 +265,4 @@ def p_element(t):
 		t[0] = t[2]
 
 def p_error(t):
-	print "Syntax error in input, in line %d!" % 0
+	print "Syntax error in input, in line %d!" % t.lineno
