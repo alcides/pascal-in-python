@@ -1,4 +1,4 @@
-from ast import Node
+from codegen.ast import Node
 
 # META
 

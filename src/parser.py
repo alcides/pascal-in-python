@@ -2,7 +2,7 @@ import sys
 from ply import yacc,lex
 from tokens import *
 from rules import *
-from builder import *
+from codegen.builder import *
 
 def get_input():
 	if len(sys.argv) > 1:

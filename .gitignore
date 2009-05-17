@@ -2,3 +2,5 @@
 *.out
 parsetab*
 .DS_Store
+success.txt
+*.bc
