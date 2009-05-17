@@ -29,6 +29,8 @@ def main(options={},filename=False):
 	
 	if options.verbose:
 		print o
+		if options.run:
+			print 20*"-" + " END " + 20*"-"
 		
 	if options.run:
 		
@@ -37,7 +39,7 @@ def main(options={},filename=False):
 		bytecode = _core.LLVMGetBitcodeFromModule(o.ptr)
 		
 		p = Popen(['lli'],stdout=PIPE, stdin=PIPE)
-		print p.communicate(bytecode)[0]
+		sys.stdout.write(p.communicate(bytecode)[0])
 	else:		
 		o.to_bitcode(file("tmp/middle.bc", "w"))
 		#os.system("llvm-as tmp/middle.bc | opt -std-compile-opts -f > tmp/optimized.bc")
