@@ -4,3 +4,4 @@ parsetab*
 .DS_Store
 success.txt
 *.bc
+tmp
