@@ -23,6 +23,7 @@ def main():
 	data = get_input()
 	ast =  yacc.parse(data,lexer = lex.lex())	
 	o = Writer()(ast)
+	print o.module
 	
 if __name__ == '__main__':
 	main()
