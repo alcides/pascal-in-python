@@ -1,6 +1,13 @@
+from llvm.core import *
+
 class Context(object):
-	def __init__(self,builder):
-		self.builder = builder
+	def __init__(self,current,builder = False):
+		self.current = current
+		if not builder:
+			self.builder = Builder.new(self.current)
+		else:
+			self.builder = builder
+		
 		self.variables = {}
 		
 	def has_variable(self,name):

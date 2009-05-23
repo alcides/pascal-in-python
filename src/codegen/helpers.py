@@ -2,6 +2,43 @@ from llvm.core import *
 import ptypes as types
 
 
+def compare(sign,v1,v2):
+	""" [">",">=","=","<=","<","<>"] """
+	if sign == ">":
+		i_cod = IPRED_UGT
+		f_cod = RPRED_OGT
+	elif sign == ">=":
+		i_cod = IPRED_UGE
+		f_cod = RPRED_OGE
+	elif sign == "=":
+		i_cod = IPRED_EQ
+		f_cod = RPRED_OEQ
+	elif sign == "<=":
+		i_cod = IPRED_ULE
+		f_cod = RPRED_OLE
+	elif sign == "<":
+		i_cod = IPRED_ULT
+		f_cod = RPRED_OLT
+	elif sign == "<>":
+		i_cod = IPRED_NE
+		f_cod = RPRED_ONE
+	else:
+		return c_boolean(False)
+	
+	if v1.type == types.integer:
+		return v1.icmp(i_cod, v2)
+	elif v1.type == types.real:
+		return v1.fcmp(f_code, v2)
+	else:
+		return c_boolean(False)
+	
+
+def c_boolean(val):
+	if val:
+		return c_int(1).icmp(IPRED_UGT,c_int(0))
+	else:
+		return c_int(0).icmp(IPRED_UGT,c_int(1))
+
 def c_int(val):
 	return Constant.int(types.integer,val)
 
@@ -74,3 +111,4 @@ def create_writeint(mod):
 	b.call(printf,[stringConst,printInt.args[0]])
 	b.ret_void()
 	return printInt;
+	

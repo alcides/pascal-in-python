@@ -1,5 +1,5 @@
 from codegen.ast import Node
-
+import sys
 # META
 
 #start = 'block'
@@ -171,7 +171,7 @@ def p_if_statement(t):
 	if len(t) == 5:
 		t[0] = Node('if',t[2],t[4])
 	else:
-		t[0] = Node('ifelse',t[2],t[4],t[6])
+		t[0] = Node('if',t[2],t[4],t[6])
 	
 def p_while_statement(t):
 	"""while_statement : WHILE expression DO statement"""
@@ -264,3 +264,4 @@ def p_char(t):
 
 def p_error(t):
 	print "Syntax error in input, in line %d!" % t.lineno
+	sys.exit()

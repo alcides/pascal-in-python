@@ -17,7 +17,8 @@ class Writer(object):
 	def __init__(self):
 		self.functions={}
 		self.contexts = []
-
+		self.counter = 0
+		
 	def get_var(self,name):
 		for c in self.contexts[::-1]:
 			if c.has_variable(name):
@@ -26,7 +27,10 @@ class Writer(object):
 
 	def get_builder(self):
 		return self.contexts[-1].get_builder()
-
+		
+	def get_current(self):
+		return self.contexts[-1].current
+		
 	def descend(self,node):
 		return self(node)
 
@@ -46,9 +50,10 @@ class Writer(object):
 				self.functions[f] = stdio[f]
 			
 			main = create_main(self.module)
+			
 			block = Builder.new(main.append_basic_block("entry"))
 			
-			self.contexts.append(Context(block))
+			self.contexts.append(Context(main,block))
 			self.descend(ast.args[1])
 			
 			block.ret(c_int(0))
@@ -77,10 +82,10 @@ class Writer(object):
 			self.contexts[-1].set_variable(var_name,v)
 			
 		elif ast.type == "type":
-			return str(ast.args[0])
+			return str(ast.args[0]).upper()
 			
 		elif ast.type == "identifier":
-			return str(ast.args[0])
+			return str(ast.args[0]).lower()
 			
 		elif ast.type == "function_call":
 			builder = self.get_builder()
@@ -111,6 +116,38 @@ class Writer(object):
 			ref = self.get_var(varName)
 			builder.store(value, ref)
         
+		elif ast.type == "if":
+			now = self.get_current()
+			builder = self.get_builder()
+			
+			#if
+			cond = self.descend(ast.args[0])
+			
+			# the rest
+			self.counter += 1
+			tail = now.append_basic_block("tail_" + str(self.counter))
+			
+			# then
+			then_block = now.append_basic_block("if_" + str(self.counter))
+			self.contexts.append( Context(then_block)  )
+			self.descend(ast.args[1])
+			self.get_builder().branch(tail)
+			self.contexts.pop()
+			
+			# else
+			else_block = now.append_basic_block("else_" + str(self.counter))
+			self.contexts.append( Context(else_block)  )
+			if len(ast.args) > 2:
+				self.descend(ast.args[2])
+			self.get_builder().branch(tail)				
+			self.contexts.pop()
+			
+			
+			builder.cbranch(cond,then_block,else_block)
+			self.contexts.append(Context(tail))
+			
+				
+
 		elif ast.type == "sign":
 			return ast.args[0]
 
@@ -123,8 +160,19 @@ class Writer(object):
 			
 			if sign == "+":
 				return builder.add(v1, v2)
+			elif sign == "-":
+				return builder.sub(v1, v2)
 			elif sign == "*":
 				return builder.mul(v1, v2)
+			elif sign == "/":
+				return builder.fdiv(v1, v2)
+			elif sign == "mod":
+				return builder.sdiv(v1, v2)
+			elif sign in [">",">=","=","<=","<","<>"]:
+				return compare(sign,v1,v2)
+			else:
+				print sign	
+				
 				
 		elif ast.type == "element":
 			builder = self.get_builder()

@@ -27,6 +27,10 @@ def main(options={},filename=False):
 	ast =  yacc.parse(data,lexer = lex.lex())	
 	o = Writer()(ast)
 	
+	if not hasattr(o,"ptr"):
+		print "Error compiling"
+		sys.exit()
+		
 	if options.verbose:
 		print o
 		if options.run:
