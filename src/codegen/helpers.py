@@ -21,7 +21,8 @@ def add_stdio(mod):
 	return {
 		"printf": mod.add_function(types.function(types.void, (Type.pointer(types.int8, 0),), 1), "printf"),
 		"writeln": create_write(mod,ln=True),
-		"write": create_write(mod)
+		"write": create_write(mod),
+		"writeint": create_writeint(mod)		
 	}
 	
 def create_main(mod):
@@ -53,3 +54,20 @@ def create_write(mod,ln=False):
 			pointer(builder, c_string(mod,"\n")),
 		))
 	builder.ret_void()
+	return f
+
+def create_writeint(mod):
+	printf = mod.get_function_named("printf")
+	
+	funcType = Type.function(Type.void(), [Type.int(32)])  
+	printInt = mod.add_function(funcType, 'writeint')  
+
+	bb = printInt.append_basic_block('bb')  
+	b = Builder.new(bb)  
+	
+	stringConst = c_string(mod,"%d\n")
+	stringConst = pointer(b,stringConst)
+	
+	b.call(printf,[stringConst,printInt.args[0]])
+	b.ret_void()
+	return printInt;

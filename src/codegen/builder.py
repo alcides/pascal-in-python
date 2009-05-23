@@ -101,6 +101,8 @@ class Writer(object):
 			s = c_string(self.module,ast.args[0])
 			return pointer(b,s)
 			
+		elif ast.type == "integer":
+			return c_int(int(ast.args[0]))
 			
 		else:
 			print "unknown:", ast.type

@@ -5,3 +5,4 @@ parsetab*
 success.txt
 *.bc
 tmp
+*.o
