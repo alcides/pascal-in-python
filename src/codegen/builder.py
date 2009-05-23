@@ -18,6 +18,15 @@ class Writer(object):
 		self.functions={}
 		self.contexts = []
 
+	def get_var(self,name):
+		for c in self.contexts[::-1]:
+			if c.has_variable(name):
+				return c.get_variable(name)
+		raise Exception, "Variable %s doesn't exist" % name
+
+	def get_builder(self):
+		return self.contexts[-1].get_builder()
+
 	def descend(self,node):
 		return self(node)
 
@@ -47,6 +56,7 @@ class Writer(object):
 			return self.module
 			
 		elif ast.type == "block":
+
 			self.descend(ast.args[0]) # Var
 			self.descend(ast.args[1]) # Function def
 			self.descend(ast.args[2]) # Statement
@@ -56,23 +66,24 @@ class Writer(object):
 				self.descend(son)
 				
 		elif ast.type == "var":
-			var_name = ast.args[0]
+			var_name = self.descend(ast.args[0])
 			var_type_name = self.descend(ast.args[1])
 			var_type = types.translation[var_type_name]
 			var_value = types.defaults[var_type_name]
 			
-			builder = self.contexts[-1].get_builder()
+			builder = self.get_builder()
 			v = builder.alloca(var_type)
 			builder.store(c_int(var_value),v)
+			self.contexts[-1].set_variable(var_name,v)
 			
 		elif ast.type == "type":
-			return ast.args[0]
+			return str(ast.args[0])
 			
 		elif ast.type == "identifier":
-			return ast.args[0]
+			return str(ast.args[0])
 			
 		elif ast.type == "function_call":
-			builder = self.contexts[-1].get_builder()
+			builder = self.get_builder()
 			
 			function_name = self.descend(ast.args[0])
 			function = self.module.get_function_named(function_name)
@@ -93,16 +104,48 @@ class Writer(object):
 				c = self.descend(ast.args[0])
 			return [c]
 			
+		elif ast.type == "assign":
+			builder = self.get_builder()
+			varName = self.descend(ast.args[0])
+			value = self.descend(ast.args[1])
+			ref = self.get_var(varName)
+			builder.store(value, ref)
+        
+		elif ast.type == "sign":
+			return ast.args[0]
+
+		elif ast.type == "op":
+			sign = self.descend(ast.args[0])
+			v1 = self.descend(ast.args[1])
+			v2 = self.descend(ast.args[2])
+			
+			builder = self.get_builder()
+			
+			if sign == "+":
+				return builder.add(v1, v2)
+			elif sign == "*":
+				return builder.mul(v1, v2)
+				
 		elif ast.type == "element":
-			return self.descend(ast.args[0])
+			builder = self.get_builder()
+			
+			e = ast.args[0]
+			if e.type == "identifier":
+				ref = self.get_var(self.descend(e))
+				return builder.load(ref)
+			else:
+				return self.descend(ast.args[0])
 			
 		elif ast.type == "string":
-			b = self.contexts[-1].get_builder()
+			b = self.get_builder()
 			s = c_string(self.module,ast.args[0])
 			return pointer(b,s)
 			
 		elif ast.type == "integer":
 			return c_int(int(ast.args[0]))
+			
+		elif ast.type == "real":
+			return c_real(float(ast.args[0]))
 			
 		else:
 			print "unknown:", ast.type

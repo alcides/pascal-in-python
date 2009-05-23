@@ -1,19 +1,18 @@
 class Context(object):
-	def __init__(self,builder,parent=False):
+	def __init__(self,builder):
 		self.builder = builder
-		self.variables = []
-		self.parent = parent
+		self.variables = {}
+		
+	def has_variable(self,name):
+		return name in self.variables
 		
 	def set_variable(self,name,value):
-		self.variables[name] = vale
+		self.variables[name] = value
 		
 	def get_variable(self,name):
 		if name in self.variables:
 			return self.variables[name]
-		if self.parent:
-			return self.parent.get_variable(name)
-		else:
-			return None
+		raise Exception, "Variable %s doesn't exist" % name
 			
 	def get_builder(self):
 		return self.builder

@@ -190,7 +190,7 @@ def p_for_statement(t):
 	
 def p_assignment_statement(t):
 	"""assignment_statement : identifier ASSIGNMENT expression"""
-	t[0] = Node('assign',t[1],t[2])
+	t[0] = Node('assign',t[1],t[3])
 	
 def p_expression(t):
 	"""expression : element
@@ -198,7 +198,7 @@ def p_expression(t):
 	if len(t) == 2:
 		t[0] = t[1]
 	else:
-		t[0] = Node('op',t[1],t[2],t[3])
+		t[0] = Node('op',t[2],t[1],t[3])
 
 def p_sign(t):
 	"""sign : PLUS

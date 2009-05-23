@@ -5,6 +5,9 @@ import ptypes as types
 def c_int(val):
 	return Constant.int(types.integer,val)
 
+def c_real(val):
+	return Constant.real(types.real, val)
+
 def c_string(context,val,name=""):
 	""" Creates a string for LLVM """
 	str = context.add_global_variable(Type.array(types.int8, len(val) + 1), name)
