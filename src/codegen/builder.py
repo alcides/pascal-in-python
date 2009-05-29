@@ -24,6 +24,9 @@ class Writer(object):
 			if c.has_variable(name):
 				return c.get_variable(name)
 		raise Exception, "Variable %s doesn't exist" % name
+		
+	def set_var(self,name,value):
+		self.contexts[-1].set_variable(name,value)
 
 	def get_builder(self):
 		return self.contexts[-1].get_builder()
@@ -76,10 +79,13 @@ class Writer(object):
 			var_type = types.translation[var_type_name]
 			var_value = types.defaults[var_type_name]
 			
+			
 			builder = self.get_builder()
+			
 			v = builder.alloca(var_type)
+			
 			builder.store(c_int(var_value),v)
-			self.contexts[-1].set_variable(var_name,v)
+			self.set_var(var_name,v)
 			
 		elif ast.type == "type":
 			return str(ast.args[0]).upper()
@@ -104,7 +110,7 @@ class Writer(object):
 			c = ast.args[0]
 			if c.type == "identifier":
 				label = self.descend(ast.args[0])
-				c = self.contexts[-1].get_variable(label)
+				c = self.get_var(label)
 			else:
 				c = self.descend(ast.args[0])
 			return [c]

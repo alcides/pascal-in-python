@@ -1,8 +1,8 @@
 program Comparisons;
 var
-	a : REAL;
+	a : INTEGER;
 begin
-        if (1 > 1) then
+        if (1 = 1) then
 			writeln("ola")
 		else
 			writeln("adeus");
