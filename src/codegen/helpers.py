@@ -57,6 +57,28 @@ def pointer(block,val):
 	return block.gep(val,(  c_int(0), c_int(0) ))
 	
 	
+def eval_type(v):
+	if type(v) == type(1):
+		return c_int(v)
+	if type(v) == type(1.0):
+		return c_real(v)
+	if type(v) == type(""):
+		return c_string(v)
+	if type(v) == type(True):
+		return c_boolean(v)
+	else:
+		return types.void
+	
+def var_init(builder, name, type_name, value=False):
+	if not value:
+		v = eval_type(types.defaults[type_name])
+	else:
+		v = eval_type(value)
+	t = types.translation[type_name]
+	ref = builder.alloca(t)
+	builder.store(v,ref)
+	return ref
+	
 def add_stdio(mod):
 	""" Adds stdio functions to a module """
 	return {

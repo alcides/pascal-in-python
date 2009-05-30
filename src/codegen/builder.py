@@ -80,15 +80,8 @@ class Writer(object):
 		elif ast.type == "var":
 			var_name = self.descend(ast.args[0])
 			var_type_name = self.descend(ast.args[1])
-			var_type = types.translation[var_type_name]
-			var_value = types.defaults[var_type_name]
-			
-			
 			builder = self.get_builder()
-			
-			v = builder.alloca(var_type)
-			
-			builder.store(c_int(var_value),v)
+			v = var_init(builder, var_name, var_type_name)
 			self.set_var(var_name,v)
 			
 		elif ast.type == "type":
@@ -125,6 +118,7 @@ class Writer(object):
 			value = self.descend(ast.args[1])
 			ref = self.get_var(varName)
 			builder.store(value, ref)
+			return varName
         
 
 		elif ast.type == "while":
@@ -151,12 +145,45 @@ class Writer(object):
 			b.branch(loop)
 			self.contexts.pop()
 			
-			
 			# start loop
 			builder.branch(loop)
 			
 			# continue
 			self.contexts.append(Context(tail))
+			
+		elif ast.type == "for":
+			
+			direction = self.descend(ast.args[1])
+			limit = ast.args[2]
+			builder = self.get_builder()
+			
+			# var declaration
+			varname = self.descend(ast.args[0].args[0])
+			vartype = "INTEGER"
+			v = var_init(builder, varname, vartype)
+			self.set_var(varname,v)
+			
+			# var init
+			variable = self.descend(ast.args[0])
+			
+			# cond
+			var1 = Node('element',Node('identifier',varname))
+			var1_name = Node('identifier',varname)
+
+			sign = Node('sign',(direction == "to") and '<=' or '>=')
+			comp = Node('op',sign,var1,limit)
+			
+			# body
+			op = Node('sign',(direction == "to") and '+' or '-')
+			varvalue = Node('op',op,var1,Node('element',Node('integer',1)))
+			increment = Node('assign',var1_name,varvalue)
+			
+			body = Node('statement_list',ast.args[3],increment)
+			
+			# do while
+			while_block = Node('while',comp,body)			
+			
+			self.descend(while_block)
 			
 			
 		elif ast.type == "if":
