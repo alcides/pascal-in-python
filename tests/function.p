@@ -9,18 +9,18 @@ var
 		writeint(A) 
 	end; 
 
-{	function Summation(num : integer) : integer;
+	function Summation(num : integer) : integer;
 	begin
 		if num = 1 then 
 			Summation := 1 
 		else 
-			Summation := Summation(num-1) + num 
+			Summation := 2;
 	end; 
-}
+
 begin 
 	A := 20; 
 	writeint(A); 
 	ScopeInner(A);
-	
+	writeint(Summation(10));
 	writeint(A); 
 end.

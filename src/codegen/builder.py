@@ -95,7 +95,7 @@ class Writer(object):
 		elif ast.type == "identifier":
 			return str(ast.args[0]).lower()
 			
-		elif ast.type == "function_call":
+		elif ast.type in ["function_call","function_call_inline"]:
 			builder = self.get_builder()
 			
 			function_name = self.descend(ast.args[0])
@@ -107,7 +107,8 @@ class Writer(object):
 				if ast.args[1]:
 					arguments = self.descend(ast.args[1])
 					
-			builder.call(function,arguments)
+			# TODO BUG - corrigido	
+			return builder.call(function,arguments)
 			
 		elif ast.type == "parameter":
 			c = ast.args[0]
@@ -128,7 +129,6 @@ class Writer(object):
 			
 		elif ast.type in ['procedure','function']:
 			
-			
 			def get_params(node):
 				""" Return a list of tuples of params """
 				if node.type == 'parameter':
@@ -139,31 +139,38 @@ class Writer(object):
 						l.extend(get_params(p))
 					return l
 				
-			
-			if ast.type == 'procedure':
+			head = ast.args[0]
+			if head.type == 'procedure_head':
 				return_type = types.void
 			else:
-				pass
+				return_type = types.translation[self.descend(head.args[-1])]
 				
-			name = self.descend(ast.args[0].args[0])
+			name = self.descend(head.args[0])
 			if len(ast.args) > 1:
-				params = get_params(ast.args[0].args[1])
+				params = get_params(head.args[1])
 			else:
 				params = []
 			code = ast.args[1]
 			
 			ftype = types.function(return_type,[ i[1] for i in params ])
 			f = Function.new(self.module, ftype, name)
+			fb = Builder.new(f.append_basic_block("entry"))
 			
-			self.contexts.append(Context( f.append_basic_block("entry") ))
+			self.contexts.append(Context( f,fb ))
 			b = self.get_builder()
 			for i,p in enumerate(params):
 				x = f.args[i]; x.name = p[0]
 				self.set_param(p[0],x)
 				
+			if ast.type == 'function':
+				type_name = types.reverse_translation[return_type]
+				v = var_init(b, name, type_name)
+				self.set_var(name,v)
 			self.descend(code)
 			if ast.type == 'procedure':
-				self.get_builder().ret_void()
+				b.ret_void()
+			else:
+				b.ret(self.get_var(name))
 			self.contexts.pop()
 		
         
@@ -194,9 +201,8 @@ class Writer(object):
 			
 			# start loop
 			builder.branch(loop)
-			
-			# continue
-			self.contexts.append(Context(tail))
+			self.contexts[-1].current = tail
+			self.contexts[-1].builder = Builder.new(tail)
 			
 		elif ast.type == "repeat":
 			cond = ast.args[1]
@@ -272,7 +278,8 @@ class Writer(object):
 			self.contexts.pop()
 			
 			builder.cbranch(cond,then_block,else_block)
-			self.contexts.append(Context(tail))
+			self.contexts[-1].current = tail
+			self.contexts[-1].builder = Builder.new(tail)
 				
 
 		elif ast.type in ["sign","and_or"]:

@@ -21,7 +21,6 @@ class Context(object):
 		self.params[name] = value
 		
 	def get_variable(self,name):
-		print name, self.params
 		if name in self.params:
 			return self.params[name]
 		if name in self.variables:

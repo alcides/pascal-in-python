@@ -22,6 +22,16 @@ translation = {
 	"CHAR": char
 }
 
+class ReverseDict(object):
+	def __init__(self,dic):
+		self.dic = dic
+	def __getitem__(self,p):
+		for k in self.dic:
+			if self.dic[k] == p:
+				return k
+				
+reverse_translation = ReverseDict(translation)
+				
 defaults = {
 	"INTEGER": 0,
 	"REAL": 0,

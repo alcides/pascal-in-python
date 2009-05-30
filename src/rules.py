@@ -55,7 +55,7 @@ def p_procedure_or_function(t):
 		| """
 		
 	if len(t) == 4:
-		t[0] = Node('function_list',t[1],t[2])
+		t[0] = Node('function_list',t[1],t[3])
 		
 		
 def p_proc_or_func_declaration(t):

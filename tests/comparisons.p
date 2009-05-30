@@ -3,10 +3,9 @@ var
 	a : INTEGER;
 begin
 	a := 1;
-	repeat
-		begin
-		a := a + 1;
-		writeint(a);
-		end
-	until a < 10;
+	if a = 1 then
+		writeint(a)
+	else
+		writeint(2);
+	writeint(3);
 end.
