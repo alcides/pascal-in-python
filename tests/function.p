@@ -2,10 +2,10 @@ program test3;
 var 
 	A : integer; 
 
-	procedure ScopeInner; 
+	procedure ScopeInner(num : integer); 
 	var A : integer; 
 		begin
-		A := 10; 
+		A := 10 + num; 
 		writeint(A) 
 	end; 
 
@@ -20,7 +20,7 @@ var
 begin 
 	A := 20; 
 	writeint(A); 
-	ScopeInner;
+	ScopeInner(A);
 	
 	writeint(A); 
 end.

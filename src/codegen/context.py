@@ -9,14 +9,21 @@ class Context(object):
 			self.builder = builder
 		
 		self.variables = {}
+		self.params = {}
 		
 	def has_variable(self,name):
-		return name in self.variables
+		return name in self.variables or name in self.params
 		
 	def set_variable(self,name,value):
 		self.variables[name] = value
 		
+	def set_param(self,name,value):
+		self.params[name] = value
+		
 	def get_variable(self,name):
+		print name, self.params
+		if name in self.params:
+			return self.params[name]
 		if name in self.variables:
 			return self.variables[name]
 		raise Exception, "Variable %s doesn't exist" % name

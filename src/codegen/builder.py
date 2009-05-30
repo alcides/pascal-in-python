@@ -27,6 +27,9 @@ class Writer(object):
 	def set_var(self,name,value):
 		self.contexts[-1].set_variable(name,value)
 
+	def set_param(self,name,value):
+		self.contexts[-1].set_param(name,value)
+		
 	def get_builder(self):
 		return self.contexts[-1].get_builder()
 		
@@ -45,6 +48,8 @@ class Writer(object):
 		
 		if ast.__class__ != Node:
 			return ast
+			
+		print ast.type, id(ast)
 			
 		if ast.type == "program":
 			mod_name = self.descend(ast.args[0])
@@ -122,18 +127,40 @@ class Writer(object):
 			return varName
 			
 		elif ast.type in ['procedure','function']:
+			
+			
+			def get_params(node):
+				""" Return a list of tuples of params """
+				if node.type == 'parameter':
+					return [(self.descend(node.args[0]), types.translation[self.descend(node.args[1])])]
+				else:
+					l = []
+					for p in node.args:
+						l.extend(get_params(p))
+					return l
+				
+			
 			if ast.type == 'procedure':
 				return_type = types.void
 			else:
 				pass
 				
 			name = self.descend(ast.args[0].args[0])
-			parms_type = []
+			if len(ast.args) > 1:
+				params = get_params(ast.args[0].args[1])
+			else:
+				params = []
 			code = ast.args[1]
 			
-			ftype = types.function(return_type,parms_type)
-			f = self.module.add_function(ftype,name)
+			ftype = types.function(return_type,[ i[1] for i in params ])
+			f = Function.new(self.module, ftype, name)
+			
 			self.contexts.append(Context( f.append_basic_block("entry") ))
+			b = self.get_builder()
+			for i,p in enumerate(params):
+				x = f.args[i]; x.name = p[0]
+				self.set_param(p[0],x)
+				
 			self.descend(code)
 			if ast.type == 'procedure':
 				self.get_builder().ret_void()
@@ -284,6 +311,8 @@ class Writer(object):
 			e = ast.args[0]
 			if e.type == "identifier":
 				ref = self.get_var(self.descend(e))
+				if ref.__class__ == Argument:
+					return ref
 				return builder.load(ref)
 			else:
 				return self.descend(ast.args[0])
