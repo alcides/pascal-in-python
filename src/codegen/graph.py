@@ -4,7 +4,7 @@ import pydot
 def graph(node):
 	edges = descend(node)
 	g=pydot.graph_from_edges(edges) 
-	g.write_png('graph_from_edges_dot.png', prog='dot') 
+	g.write_png('tmp/graph_from_edges_dot.png', prog='dot') 
 	
 
 def descend(node):	
