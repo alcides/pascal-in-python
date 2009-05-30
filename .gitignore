@@ -6,3 +6,4 @@ success.txt
 *.bc
 tmp
 *.o
+*.p.png
