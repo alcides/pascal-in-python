@@ -126,6 +126,39 @@ class Writer(object):
 			ref = self.get_var(varName)
 			builder.store(value, ref)
         
+
+		elif ast.type == "while":
+			self.counter += 1
+			now = self.get_function()
+			builder = self.get_builder()
+			
+			
+			loop = now.append_basic_block("loop_%d" % self.counter)			
+			body = now.append_basic_block("body_%d" % self.counter)
+			tail = now.append_basic_block("tail_%d" % self.counter)
+
+			# do while code
+			self.contexts.append(Context(loop))
+			b = self.get_builder()
+			cond = self.descend(ast.args[0])
+			b.cbranch(cond,body,tail)
+			self.contexts.pop()
+			
+			self.contexts.append(Context(body))
+			b = self.get_builder()
+			self.descend(ast.args[1])
+			# repeat
+			b.branch(loop)
+			self.contexts.pop()
+			
+			
+			# start loop
+			builder.branch(loop)
+			
+			# continue
+			self.contexts.append(Context(tail))
+			
+			
 		elif ast.type == "if":
 			now = self.get_function()
 			builder = self.get_builder()
@@ -135,10 +168,10 @@ class Writer(object):
 			
 			# the rest
 			self.counter += 1
-			tail = now.append_basic_block("tail_" + str(self.counter))
+			tail = now.append_basic_block("tail_%d" % self.counter)
 			
 			# then
-			then_block = now.append_basic_block("if_" + str(self.counter))
+			then_block = now.append_basic_block("if_%d" % self.counter)
 			self.contexts.append( Context(then_block)  )
 			self.descend(ast.args[1])
 			b = self.get_builder()
@@ -147,7 +180,7 @@ class Writer(object):
 			self.contexts.pop()
 			
 			# else
-			else_block = now.append_basic_block("else_" + str(self.counter))
+			else_block = now.append_basic_block("else_%d" % self.counter)
 			self.contexts.append( Context(else_block)  )
 			if len(ast.args) > 2:
 				self.descend(ast.args[2])
