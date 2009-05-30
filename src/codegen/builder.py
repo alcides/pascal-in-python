@@ -73,7 +73,7 @@ class Writer(object):
 			self.descend(ast.args[1]) # Function def
 			self.descend(ast.args[2]) # Statement
 		
-		elif ast.type == "var_list" or ast.type == "statement_list":
+		elif ast.type in ["var_list","statement_list","function_list"]:
 			for son in ast.args:
 				self.descend(son)
 				
@@ -98,8 +98,9 @@ class Writer(object):
 			
 			arguments = []
 			
-			if ast.args[1]:
-				arguments = self.descend(ast.args[1])
+			if len(ast.args) > 1:
+				if ast.args[1]:
+					arguments = self.descend(ast.args[1])
 					
 			builder.call(function,arguments)
 			
@@ -119,6 +120,25 @@ class Writer(object):
 			ref = self.get_var(varName)
 			builder.store(value, ref)
 			return varName
+			
+		elif ast.type in ['procedure','function']:
+			if ast.type == 'procedure':
+				return_type = types.void
+			else:
+				pass
+				
+			name = self.descend(ast.args[0].args[0])
+			parms_type = []
+			code = ast.args[1]
+			
+			ftype = types.function(return_type,parms_type)
+			f = self.module.add_function(ftype,name)
+			self.contexts.append(Context( f.append_basic_block("entry") ))
+			self.descend(code)
+			if ast.type == 'procedure':
+				self.get_builder().ret_void()
+			self.contexts.pop()
+		
         
 
 		elif ast.type == "while":
