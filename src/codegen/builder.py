@@ -151,6 +151,14 @@ class Writer(object):
 			# continue
 			self.contexts.append(Context(tail))
 			
+		elif ast.type == "repeat":
+			cond = ast.args[1]
+			body = ast.args[0]
+			
+			while_b = Node('while',cond,body)
+			final = Node('statement_list',body,while_b)
+			return self.descend(final)
+			
 		elif ast.type == "for":
 			
 			direction = self.descend(ast.args[1])
