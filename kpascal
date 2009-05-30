@@ -11,6 +11,11 @@ parser.add_option("-e", "--emit",
                   action="store_true", dest="verbose", default=False,
                   help="prints the bytecode to the screen")
 
+parser.add_option("-g", "--graph",
+                  action="store_true", dest="graph", default=False,
+                  help="shows the AST graph")
+
+
 parser.add_option("-i", "--instant",
                   action="store_true", dest="run", default=False,
                   help="runs the result instead of saving")

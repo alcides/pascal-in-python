@@ -1,15 +1,20 @@
 import pydot
+from ast import Node
 
 
-def graph(node):
+def graph(node, filename):
 	edges = descend(node)
 	g=pydot.graph_from_edges(edges) 
-	g.write_png('tmp/graph_from_edges_dot.png', prog='dot') 
+	if filename:
+		f = filename + ".png"
+	else:
+		f = "graph.png"
+	g.write_png(f, prog='dot') 
 	
 
 def descend(node):	
 	edges = []
-	if type(node) == type("") or type(node) == type(1):
+	if node.__class__ != Node:
 		return []
 	
 	for i in node.args:
@@ -19,7 +24,7 @@ def descend(node):
 	
 	
 def s(node):
-	if type(node) == type("") or type(node) == type(1):
+	if node.__class__ != Node:
 		return "%s (%s)" % (node,id(node))
 	return "%s (%s)" % (node.type,id(node))
 	

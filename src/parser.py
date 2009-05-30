@@ -25,6 +25,11 @@ def main(options={},filename=False):
 	yacc.yacc()
 	data = get_input(filename)
 	ast =  yacc.parse(data,lexer = lex.lex())	
+	
+	if options.graph:
+		from codegen.graph import graph
+		graph(ast, filename)
+	
 	o = Writer()(ast)
 	
 	if not hasattr(o,"ptr"):
