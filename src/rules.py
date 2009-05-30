@@ -194,11 +194,17 @@ def p_assignment_statement(t):
 	
 def p_expression(t):
 	"""expression : element
+	 | expression and_or expression
 	 | expression sign element"""
 	if len(t) == 2:
 		t[0] = t[1]
 	else:
 		t[0] = Node('op',t[2],t[1],t[3])
+
+def p_and_or(t):
+	""" and_or : AND
+	| OR """
+	t[0] = Node('and_or',t[1])
 
 def p_sign(t):
 	"""sign : PLUS
@@ -207,8 +213,6 @@ def p_sign(t):
 	| DIVISION
 	| DIV
 	| MOD
-	| AND
-	| OR
 	| EQ
 	| NEQ
 	| LT

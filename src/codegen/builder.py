@@ -160,7 +160,7 @@ class Writer(object):
 			self.contexts.append(Context(tail))
 				
 
-		elif ast.type == "sign":
+		elif ast.type in ["sign","and_or"]:
 			return ast.args[0]
 
 		elif ast.type == "op":
@@ -182,6 +182,10 @@ class Writer(object):
 				return builder.sdiv(v1, v2)
 			elif sign in [">",">=","=","<=","<","<>"]:
 				return compare(sign,v1,v2,builder)
+			elif sign == "and":
+				return builder.and_(v1,v2)
+			elif sign == "or":
+				return builder.or_(v1,v2)
 			else:
 				print sign	
 				

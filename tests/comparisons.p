@@ -7,5 +7,8 @@ begin
 			writeln("ola")
 		else
 			writeln("adeus");
+		a := a + 1;
 		writeint(a);
+		
+		if (a = 1 or a = 3) then writeln("cool");
 end.
