@@ -33,6 +33,11 @@ class Writer(object):
 	def get_current(self):
 		return self.contexts[-1].current
 		
+	def get_function(self):
+		for c in self.contexts[::-1]:
+			if c.current.__class__ == Function:
+				return c.current
+		
 	def descend(self,node):
 		return self(node)
 
@@ -122,7 +127,7 @@ class Writer(object):
 			builder.store(value, ref)
         
 		elif ast.type == "if":
-			now = self.get_current()
+			now = self.get_function()
 			builder = self.get_builder()
 			
 			#if
@@ -152,7 +157,6 @@ class Writer(object):
 			self.contexts.pop()
 			
 			builder.cbranch(cond,then_block,else_block)
-
 			self.contexts.append(Context(tail))
 				
 
@@ -177,7 +181,7 @@ class Writer(object):
 			elif sign == "mod":
 				return builder.sdiv(v1, v2)
 			elif sign in [">",">=","=","<=","<","<>"]:
-				return compare(sign,v1,v2)
+				return compare(sign,v1,v2,builder)
 			else:
 				print sign	
 				

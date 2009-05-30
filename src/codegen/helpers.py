@@ -2,8 +2,9 @@ from llvm.core import *
 import ptypes as types
 
 
-def compare(sign,v1,v2):
+def compare(sign,v1,v2,builder):
 	""" [">",">=","=","<=","<","<>"] """
+	
 	if sign == ">":
 		i_cod = IPRED_UGT
 		f_cod = RPRED_OGT
@@ -26,9 +27,9 @@ def compare(sign,v1,v2):
 		return c_boolean(False)
 	
 	if v1.type == types.integer:
-		return v1.icmp(i_cod, v2)
+		return builder.icmp(i_cod, v1, v2)
 	elif v1.type == types.real:
-		return v1.fcmp(f_code, v2)
+		return builder.fcmp(f_cod, v1, v2)
 	else:
 		return c_boolean(False)
 	
