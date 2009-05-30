@@ -112,3 +112,25 @@ def create_writeint(mod):
 	b.ret_void()
 	return printInt;
 	
+	
+class Block(object):
+    def __init__(self, builder, where, label):
+        self.emit = builder
+        self.block = where.append_basic_block(label)
+        self.post_block = fun.append_basic_block("__break__" + label)
+
+    def __enter__(self):
+        self.emit.branch(self.block)
+        self.emit.position_at_end(self.block)
+        return self.block, self.post_block
+
+    def __exit__(self, *arg):
+        self.emit.branch(self.post_block)
+        self.emit.position_at_end(self.post_block)
+
+class IfBlock(Block):
+    count = 0
+    def __init__(self, emit, fun, cond):
+        Block.__init__(self, emit, fun, "if_%d" % self.__class__.count)
+        self.__class__.count += 1
+        emit.cbranch(cond, self.block, self.post_block)

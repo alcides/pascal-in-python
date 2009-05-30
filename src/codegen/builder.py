@@ -8,7 +8,6 @@ from helpers import *
 from ast import Node
 from context import Context
 
-
 # http://mdevan.nfshost.com/llvm-py/userguide.html#install
 
 
@@ -59,7 +58,7 @@ class Writer(object):
 			self.contexts.append(Context(main,block))
 			self.descend(ast.args[1])
 			
-			block.ret(c_int(0))
+			self.get_builder().ret(c_int(0))
 			
 			return self.module
 			
@@ -137,7 +136,9 @@ class Writer(object):
 			then_block = now.append_basic_block("if_" + str(self.counter))
 			self.contexts.append( Context(then_block)  )
 			self.descend(ast.args[1])
-			self.get_builder().branch(tail)
+			b = self.get_builder()
+			b.branch(tail)
+			b.position_at_end(tail)
 			self.contexts.pop()
 			
 			# else
@@ -145,13 +146,14 @@ class Writer(object):
 			self.contexts.append( Context(else_block)  )
 			if len(ast.args) > 2:
 				self.descend(ast.args[2])
-			self.get_builder().branch(tail)				
+			b = self.get_builder()
+			b.branch(tail)
+			b.position_at_end(tail)
 			self.contexts.pop()
 			
-			
 			builder.cbranch(cond,then_block,else_block)
+
 			self.contexts.append(Context(tail))
-			
 				
 
 		elif ast.type == "sign":
