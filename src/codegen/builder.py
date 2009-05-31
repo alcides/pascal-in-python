@@ -143,7 +143,7 @@ class Writer(object):
 				return_type = types.translation[self.descend(head.args[-1])]
 				
 			name = self.descend(head.args[0])
-			if len(ast.args) > 1:
+			if len(head.args) > 1:
 				params = get_params(head.args[1])
 			else:
 				params = []
