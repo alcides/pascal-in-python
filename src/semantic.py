@@ -20,7 +20,12 @@ functions = {
 	'writeint':['integer']
 }
 
+def check_if_function(var):
+	if var in functions:
+		raise Exception, "%s cannot be used as a variable since there is a function with that name already" % var
+		
 def has_var(var):
+	check_if_function(var)
 	for c in contexts[::-1]:
 		if c.has_var(var):
 			return True
@@ -33,6 +38,7 @@ def get_var(var):
 	raise Exception, "Variable %s is referenced before assignment" % var
 	
 def set_var(var,typ):
+	check_if_function(var)
 	now = contexts[-1]
 	if now.has_var(var):
 		raise Exception, "Variable %s already defined" % var
@@ -78,7 +84,7 @@ def check(node):
 		elif node.type in ["function_call","function_call_inline"]:
 			fname = node.args[0].args[0].lower()
 			if fname not in functions:
-				raise Exception, "Function %s is not defined." % fnames
+				raise Exception, "Function %s is not defined" % fnames
 			if len(node.args) > 1:
 				args = get_params(node.args[1])
 			else:
