@@ -5,6 +5,7 @@ from ply import yacc,lex
 
 from tokens import *
 from rules import *
+from semantic import *
 from codegen.builder import *
 
 def get_input(file=False):
@@ -29,6 +30,12 @@ def main(options={},filename=False):
 	if options.graph:
 		from codegen.graph import graph
 		graph(ast, filename)
+	
+	try:
+		check(ast)
+	except Exception, e:
+		print "Error: %s" % e
+		sys.exit()
 	
 	o = Writer()(ast)
 	
