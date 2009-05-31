@@ -49,8 +49,6 @@ class Writer(object):
 		if ast.__class__ != Node:
 			return ast
 			
-		print ast.type, id(ast)
-			
 		if ast.type == "program":
 			mod_name = self.descend(ast.args[0])
 			if not mod_name:
@@ -106,8 +104,7 @@ class Writer(object):
 			if len(ast.args) > 1:
 				if ast.args[1]:
 					arguments = self.descend(ast.args[1])
-					
-			print function_name, arguments
+
 			return builder.call(function,arguments)
 			
 		elif ast.type == "parameter":
