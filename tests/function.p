@@ -21,6 +21,7 @@ begin
 	A := 20; 
 	writeint(A); 
 	ScopeInner(A);
-	writeint(Summation(10));
+	A := a + Summation(10);
+	writeint(a);
 	writeint(A); 
 end.

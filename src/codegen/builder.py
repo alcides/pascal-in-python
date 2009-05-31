@@ -107,7 +107,7 @@ class Writer(object):
 				if ast.args[1]:
 					arguments = self.descend(ast.args[1])
 					
-			# TODO BUG - corrigido	
+			print function_name, arguments
 			return builder.call(function,arguments)
 			
 		elif ast.type == "parameter":
@@ -167,10 +167,11 @@ class Writer(object):
 				v = var_init(b, name, type_name)
 				self.set_var(name,v)
 			self.descend(code)
+			b = self.get_builder()
 			if ast.type == 'procedure':
 				b.ret_void()
 			else:
-				b.ret(self.get_var(name))
+				b.ret(b.load(self.get_var(name)))
 			self.contexts.pop()
 		
         
@@ -201,7 +202,6 @@ class Writer(object):
 			
 			# start loop
 			builder.branch(loop)
-			self.contexts[-1].current = tail
 			self.contexts[-1].builder = Builder.new(tail)
 			
 		elif ast.type == "repeat":
@@ -278,7 +278,6 @@ class Writer(object):
 			self.contexts.pop()
 			
 			builder.cbranch(cond,then_block,else_block)
-			self.contexts[-1].current = tail
 			self.contexts[-1].builder = Builder.new(tail)
 				
 
