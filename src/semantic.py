@@ -9,6 +9,7 @@ class Any(object):
 class Context(object):
 	def __init__(self,name=None):
 		self.variables = {}
+		self.var_count = {}
 		self.name = name
 	
 	def has_var(self,name):
@@ -19,6 +20,7 @@ class Context(object):
 	
 	def set_var(self,name,typ):
 		self.variables[name] = typ
+		self.var_count[name] = 0
 
 contexts = []
 functions = {
@@ -41,6 +43,13 @@ functions = {
 			("a",'real')
 		])
 }
+
+def pop():
+	count = contexts[-1].var_count
+	for v in count:
+		if count[v] == 0:
+			print "Warning: variable %s was declared, but not used." % v
+	contexts.pop()
 
 def check_if_function(var):
 	if var.lower() in functions and not is_function_name(var.lower()):
@@ -65,6 +74,7 @@ def get_var(varn):
 	var = varn.lower()
 	for c in contexts[::-1]:
 		if c.has_var(var):
+			c.var_count[var] += 1
 			return c.get_var(var)
 	raise Exception, "Variable %s is referenced before assignment" % var
 	
@@ -117,7 +127,7 @@ def check(node):
 		elif node.type in ["program","block"]:
 			contexts.append(Context())
 			check(node.args)
-			contexts.pop()
+			pop()
 			
 		elif node.type == "var":
 			var_name = node.args[0].args[0]
@@ -147,7 +157,7 @@ def check(node):
 			for i in args:
 				set_var(i[0],i[1])
 			check(node.args[1])
-			contexts.pop()
+			pop()
 			
 		elif node.type in ["function_call","function_call_inline"]:
 			fname = node.args[0].args[0].lower()
@@ -228,13 +238,12 @@ def check(node):
 			
 			check(node.args[3])
 			
-			contexts.pop()
+			pop()
 			
 		elif node.type == 'not':
 			return check(node.args[0])
 			
 		elif node.type == "element":
-			
 			if node.args[0].type == 'identifier':
 				return get_var(node.args[0].args[0])
 			elif node.args[0].type == 'function_call_inline':
