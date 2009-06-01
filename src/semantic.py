@@ -1,6 +1,5 @@
 types = ['integer','real','char','string','boolean']
 
-
 class Any(object):
 	def __eq__(self,o):
 		return True
@@ -93,11 +92,8 @@ def check(node):
 				check(i)
 		else:
 			return node
-	else:
-		if node.type == ['element']:
-			return get_var(node.args[0].args[0])
-		
-		elif node.type in ['identifier']:
+	else:		
+		if node.type in ['identifier']:
 			return node.args[0]
 			
 		elif node.type in ['var_list','statement_list','function_list']:
@@ -148,7 +144,32 @@ def check(node):
 				for i in range(len(vargs)):
 					if vargs[i][1] != args[i]:
 						raise Exception, "Parameter #%d passed to function %s should be of type %s and not %s" % (i+1,fname,vargs[i][1],args[i])
+			
+		elif node.type == "assign":	
+				varn = check(node.args[0])
+				if not has_var(varn):
+					raise Exception, "Variable %s not declared" % varn
+				vartype = get_var(varn)
+				assgntype = check(node.args[1])
 				
+				if vartype != assgntype:
+					raise Exception, "Variable %s is of type %s and does not support %s" % (varn, vartype, assgntype)
 				
+		elif node.type == "op":
+			op = node.args[0].args[0]
+			vt1 = check(node.args[1])
+			vt2 = check(node.args[2])
+
+			if vt1 != vt2:
+				raise Exception, "Arguments of operation '%s' must be of the same type." % op
+			return vt1	
+			
+		elif node.type == "element":
+			if node.args[0].type == 'identifier':
+				return get_var(node.args[0].args[0])
+			else:
+				return node.args[0].type
+			
+			
 		else:
 			print "semantic missing:", node.type
