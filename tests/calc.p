@@ -1,16 +1,13 @@
 PROGRAM calc;
 VAR
 	j : INTEGER;
-	i : INTEGER;
+	function hello(num : integer) : integer;
+	begin
+		hello := num + 1 * 2;
+	end;
 BEGIN
-	j := 1 * 2;
-	i := j * (1 + 2);
-	if 1 < 2 then
-	  WRITEINT(i)
-	else
-	  WRITEINT(j);
-	
-	WRITELN("HELLO");
 
-
+	j := 1;
+	j := hello(j);
+	WRITELN(j);
 END.

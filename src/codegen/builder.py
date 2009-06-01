@@ -299,22 +299,25 @@ class Writer(object):
 			
 			builder = self.get_builder()
 			
+			n = "tmp_%d" % self.counter
+			self.counter += 1
+			
 			if sign == "+":
-				return builder.add(v1, v2)
+				return builder.add(v1, v2, n)
 			elif sign == "-":
-				return builder.sub(v1, v2)
+				return builder.sub(v1, v2, n)
 			elif sign == "*":
-				return builder.mul(v1, v2)
+				return builder.mul(v1, v2, n)
 			elif sign == "/":
-				return builder.fdiv(v1, v2)
+				return builder.fdiv(v1, v2, n)
 			elif sign == "mod":
-				return builder.sdiv(v1, v2)
+				return builder.sdiv(v1, v2, n)
 			elif sign in [">",">=","=","<=","<","<>"]:
-				return compare(sign,v1,v2,builder)
+				return compare(sign,v1,v2,builder, n)
 			elif sign == "and":
-				return builder.and_(v1,v2)
+				return builder.and_(v1,v2, n)
 			elif sign == "or":
-				return builder.or_(v1,v2)
+				return builder.or_(v1,v2, n)
 			else:
 				print sign	
 				

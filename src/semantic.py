@@ -7,8 +7,9 @@ class Any(object):
 		return False
 
 class Context(object):
-	def __init__(self):
+	def __init__(self,name=None):
 		self.variables = {}
+		self.name = name
 	
 	def has_var(self,name):
 		return name in self.variables
@@ -42,8 +43,15 @@ functions = {
 }
 
 def check_if_function(var):
-	if var.lower() in functions:
+	if var.lower() in functions and not is_function_name(var.lower()):
 		raise Exception, "A function called %s already exists" % var
+		
+def is_function_name(var):
+	for i in contexts[::-1]:
+		if i.name == var:
+			return True
+	return False
+		
 		
 def has_var(varn):
 	var = varn.lower()
@@ -99,7 +107,7 @@ def check(node):
 				check(i)
 		else:
 			return node
-	else:		
+	else:
 		if node.type in ['identifier']:
 			return node.args[0]
 			
@@ -135,7 +143,7 @@ def check(node):
 			functions[name] = (rettype,args)
 			
 			
-			contexts.append(Context())
+			contexts.append(Context(name))
 			for i in args:
 				set_var(i[0],i[1])
 			check(node.args[1])
@@ -162,9 +170,12 @@ def check(node):
 			
 		elif node.type == "assign":	
 				varn = check(node.args[0])
-				if not has_var(varn):
-					raise Exception, "Variable %s not declared" % varn
-				vartype = get_var(varn)
+				if is_function_name(varn):
+					vartype = functions[varn][0]
+				else:
+					if not has_var(varn):
+						raise Exception, "Variable %s not declared" % varn
+					vartype = get_var(varn)
 				assgntype = check(node.args[1])
 				
 				if vartype != assgntype:

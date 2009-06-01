@@ -193,9 +193,25 @@ def p_assignment_statement(t):
 	t[0] = Node('assign',t[1],t[3])
 	
 def p_expression(t):
-	"""expression : element
-	 | expression and_or expression
-	 | expression sign element"""
+	"""expression : expression and_or expression_m
+	| expression_m
+	"""
+	if len(t) == 2:
+		t[0] = t[1]
+	else:
+		t[0] = Node('op',t[2],t[1],t[3])
+
+def p_expression_m(t):
+	""" expression_m : expression_s
+	| expression_m sign expression_s"""
+	if len(t) == 2:
+		t[0] = t[1]
+	else:
+		t[0] = Node('op',t[2],t[1],t[3])
+	
+def p_expression_s(t):
+	""" expression_s : element 
+	| expression_s psign element"""
 	if len(t) == 2:
 		t[0] = t[1]
 	else:
@@ -206,11 +222,14 @@ def p_and_or(t):
 	| OR """
 	t[0] = Node('and_or',t[1])
 
+def p_psign(t):
+	"""psign : TIMES
+	| DIVISION"""
+	t[0] = Node('sign',t[1])
+
 def p_sign(t):
 	"""sign : PLUS
 	| MINUS
-	| TIMES
-	| DIVISION
 	| DIV
 	| MOD
 	| EQ

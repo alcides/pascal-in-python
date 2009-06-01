@@ -3,7 +3,6 @@ var
 	a : INTEGER;
 begin
 	a := 1;
-	{	
 	if a = 1 and a = 2 and a = 3 then
 		writeln(a)
 	else
@@ -18,7 +17,6 @@ begin
 		writeln(a);
 		a := a - 1;
 	end;
-	}
 	repeat
 	begin
 		writeln(a);
