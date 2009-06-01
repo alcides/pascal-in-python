@@ -3,5 +3,7 @@ VAR
    i : REAL;
 BEGIN
 	i := 1.0;
-	writereal(i);
+	writeln(i);
+	writeln(1);
+
 END.

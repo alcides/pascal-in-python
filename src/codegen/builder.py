@@ -97,14 +97,21 @@ class Writer(object):
 			builder = self.get_builder()
 			
 			function_name = self.descend(ast.args[0])
-			function = self.module.get_function_named(function_name)
 			
-			arguments = []
-			
+			arguments = []			
 			if len(ast.args) > 1:
 				if ast.args[1]:
 					arguments = self.descend(ast.args[1])
 
+			if function_name in ['write','writeln']:
+				if str(arguments[0].type) == 'double':
+					print "hey"
+					function_name += "real"
+				elif str(arguments[0].type) == 'i32':
+					function_name += "int"
+				
+
+			function = self.module.get_function_named(function_name)
 			return builder.call(function,arguments)
 			
 		elif ast.type == "parameter":

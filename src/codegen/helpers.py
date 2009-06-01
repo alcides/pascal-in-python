@@ -86,7 +86,9 @@ def add_stdio(mod):
 		"writeln": create_write(mod,ln=True),
 		"write": create_write(mod),
 		"writeint": create_write_alt('integer',mod),
-		"writereal": create_write_alt('real',mod)		
+		"writereal": create_write_alt('real',mod),
+		"writelnint": create_write_alt('integer',mod,ln=True),
+		"writelnreal": create_write_alt('real',mod,ln=True)
 	}
 	
 def create_main(mod):
@@ -100,13 +102,17 @@ def create_main(mod):
 def create_write(mod,ln=False):
 	""" Creates a stub of println """
 	
+	if ln:
+		fname = "writeln"
+	else:
+		fname = "write"
 	printf = mod.get_function_named("printf")
 	
 	string_pointer = Type.pointer(types.int8, 0)
 	
 	f = mod.add_function(
 		types.function(types.void, (string_pointer,) )
-	, "writeln")
+	, fname)
 	bb = f.append_basic_block("entry")	
 	builder = Builder.new(bb)
 	builder.call(printf,   (
@@ -120,7 +126,7 @@ def create_write(mod,ln=False):
 	builder.ret_void()
 	return f
 
-def create_write_alt(type_,mod):
+def create_write_alt(type_,mod,ln=False):
 	if type_ == 'integer':
 		fname = 'writeint'
 		code = '%d'
@@ -129,6 +135,10 @@ def create_write_alt(type_,mod):
 		fname = 'writereal'
 		code = '%f'
 		argtype = types.real
+		
+	if ln:
+		fname = fname.replace("write","writeln")
+		code += "\n"
 	
 	printf = mod.get_function_named("printf")
 	
@@ -138,7 +148,7 @@ def create_write_alt(type_,mod):
 	bb = print_alt.append_basic_block('bb')  
 	b = Builder.new(bb)  
 	
-	stringConst = c_string(mod,code + "\n")
+	stringConst = c_string(mod,code)
 	stringConst = pointer(b,stringConst)
 	
 	b.call(printf,[stringConst,print_alt.args[0]])

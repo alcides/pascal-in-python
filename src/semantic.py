@@ -1,5 +1,12 @@
 types = ['integer','real','char','string','boolean']
 
+
+class Any(object):
+	def __eq__(self,o):
+		return True
+	def __ne__(self,o):
+		return False
+
 class Context(object):
 	def __init__(self):
 		self.variables = {}
@@ -15,14 +22,16 @@ class Context(object):
 
 contexts = []
 functions = {
-	'write':[("a",'string')],
-	'writeln':[("a",'string')],
+	'write':[("a",Any())],
+	'writeln':[("a",Any())],
 	'writeint':[("a",'integer')],
-	'writereal':[("a",'real')]
+	'writereal':[("a",'real')],
+	'writelnint':[("a",'integer')],
+	'writelnreal':[("a",'real')]
 }
 
 def check_if_function(var):
-	if var in functions:
+	if var.lower() in functions:
 		raise Exception, "A function called %s already exists" % var
 		
 def has_var(varn):
@@ -47,7 +56,7 @@ def set_var(varn,typ):
 	if now.has_var(var):
 		raise Exception, "Variable %s already defined" % var
 	else:
-		now.set_var(var,typ)
+		now.set_var(var,typ.lower())
 	
 def get_params(node):
 	if node.type == "parameter":
@@ -56,7 +65,7 @@ def get_params(node):
 		if t.type == 'identifier':
 			return [get_var(t.args[0])]
 		else:
-			return [t.type]
+			return [t.type.lower()]
 	else:
 		l = []
 		for i in node.args:
@@ -137,8 +146,8 @@ def check(node):
 				raise Exception, "Function %s is expecting %d parameters and got %d" % (fname, len(vargs), len(args))
 			else:
 				for i in range(len(vargs)):
-					if vargs[i][1].lower() != args[i].lower():
-						raise Exception, "Parameter #%d passed to function %s should be of type %s and not %s" % (i+1,fname,vargs[i],args[i])
+					if vargs[i][1] != args[i]:
+						raise Exception, "Parameter #%d passed to function %s should be of type %s and not %s" % (i+1,fname,vargs[i][1],args[i])
 				
 				
 		else:
