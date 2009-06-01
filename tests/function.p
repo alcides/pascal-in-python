@@ -2,11 +2,11 @@ program test3;
 var 
 	A : integer; 
 
-	procedure ScopeInner(num : integer); 
+	procedure ScopeInner; 
 	var A : integer; 
 		begin
-		A := 10 + num; 
-		writeint(A) 
+		A := 10; 
+		writeln(A) 
 	end; 
 
 	function Summation(num : integer) : integer;
@@ -19,9 +19,9 @@ var
 
 begin 
 	A := 20; 
-	writeint(A); 
-	ScopeInner(A);
+	writeln(A); 
+	ScopeInner;
 	A := a + Summation(10);
-	writeint(a);
-	writeint(A); 
+	writeln(a);
+	writeln(A); 
 end.

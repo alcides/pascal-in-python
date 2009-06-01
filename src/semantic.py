@@ -1,4 +1,4 @@
-types = ['integer','real','char','string','boolean']
+types = ['integer','real','char','string','boolean','void']
 
 class Any(object):
 	def __eq__(self,o):
@@ -21,12 +21,24 @@ class Context(object):
 
 contexts = []
 functions = {
-	'write':[("a",Any())],
-	'writeln':[("a",Any())],
-	'writeint':[("a",'integer')],
-	'writereal':[("a",'real')],
-	'writelnint':[("a",'integer')],
-	'writelnreal':[("a",'real')]
+	'write':('void',[
+			("a",Any())
+		]),
+	'writeln':('void',[
+			("a",Any())
+		]),
+	'writeint':('void',[
+			("a",'integer')
+		]),
+	'writereal':('void',[
+			("a",'real')
+		]),
+	'writelnint':('void',[
+			("a",'integer')
+		]),
+	'writelnreal':('void',[
+			("a",'real')
+		])
 }
 
 def check_if_function(var):
@@ -63,6 +75,8 @@ def get_params(node):
 			t = node.args[0].args[0]
 		if t.type == 'identifier':
 			return [get_var(t.args[0])]
+		elif t.type == 'element':
+			return [t.args[0].type]
 		else:
 			return [t.type.lower()]
 	else:
@@ -119,7 +133,13 @@ def check(node):
 			else:
 				args = flatten(head.args[1])
 				args = map(lambda x: (x.args[0].args[0],x.args[1].args[0]), args)
-			functions[name] = args
+				
+			if node.type == 'procedure':
+				rettype = 'void'
+			else:
+				rettype = head.args[-1].args[0].lower()
+				
+			functions[name] = (rettype,args)
 			
 			
 			contexts.append(Context())
@@ -136,7 +156,7 @@ def check(node):
 				args = get_params(node.args[1])
 			else:
 				args = []
-			vargs = functions[fname]
+			rettype,vargs = functions[fname]
 		
 			if len(args) != len(vargs):
 				raise Exception, "Function %s is expecting %d parameters and got %d" % (fname, len(vargs), len(args))
@@ -144,6 +164,8 @@ def check(node):
 				for i in range(len(vargs)):
 					if vargs[i][1] != args[i]:
 						raise Exception, "Parameter #%d passed to function %s should be of type %s and not %s" % (i+1,fname,vargs[i][1],args[i])
+			
+			return rettype
 			
 		elif node.type == "assign":	
 				varn = check(node.args[0])
@@ -156,19 +178,26 @@ def check(node):
 					raise Exception, "Variable %s is of type %s and does not support %s" % (varn, vartype, assgntype)
 				
 		elif node.type == "op":
+			
 			op = node.args[0].args[0]
 			vt1 = check(node.args[1])
 			vt2 = check(node.args[2])
 
 			if vt1 != vt2:
-				raise Exception, "Arguments of operation '%s' must be of the same type." % op
+				raise Exception, "Arguments of operation '%s' must be of the same type. Got %s and %s." % (op,vt1,vt2)
 			return vt1	
 			
 		elif node.type == "element":
+			
 			if node.args[0].type == 'identifier':
 				return get_var(node.args[0].args[0])
+			elif node.args[0].type == 'function_call_inline':
+				return check(node.args[0])
 			else:
-				return node.args[0].type
+				if node.args[0].type in types:
+					return node.args[0].type
+				else:
+					return check(node.args[0])
 			
 			
 		else:
