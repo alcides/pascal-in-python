@@ -71,14 +71,7 @@ def set_var(varn,typ):
 	
 def get_params(node):
 	if node.type == "parameter":
-		if is_node(node.args[0].args[0]):
-			t = node.args[0].args[0]
-		if t.type == 'identifier':
-			return [get_var(t.args[0])]
-		elif t.type == 'element':
-			return [t.args[0].type]
-		else:
-			return [t.type.lower()]
+		return [check(node.args[0])]
 	else:
 		l = []
 		for i in node.args:
