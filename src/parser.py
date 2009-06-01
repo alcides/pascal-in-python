@@ -37,8 +37,12 @@ def main(options={},filename=False):
 		print "Error: %s" % e
 		sys.exit()
 	
-	o = Writer()(ast)
-	
+	try:
+		o = Writer()(ast)
+	except Exception, e:
+		print "Error(2): %s" % e
+		sys.exit()
+
 	if not hasattr(o,"ptr"):
 		print "Error compiling"
 		sys.exit()
