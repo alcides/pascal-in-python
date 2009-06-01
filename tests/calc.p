@@ -10,4 +10,7 @@ BEGIN
 	j := 1;
 	j := hello(j);
 	WRITELN(j);
+	WRITELN(1 / 3);
+	WRITELN(4 div 3);
+	WRITELN(5 mod 3);
 END.

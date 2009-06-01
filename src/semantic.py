@@ -209,10 +209,19 @@ def check(node):
 			if vt1 != vt2:
 				raise Exception, "Arguments of operation '%s' must be of the same type. Got %s and %s." % (op,vt1,vt2)
 				
+			if op in ['mod','div']:
+				if vt1 != 'integer':
+					raise Exception, "Operation %s requires integers." % op
+			
+			if op == '/':
+				if vt1 != 'real':
+					raise Exception, "Operation %s requires reals." % op
+				
 			if op in ['=','<=','>=','>','<','<>']:
 				return 'boolean'
 			else:
 				return vt1	
+			
 				
 		elif node.type in ['if','while','repeat']:
 			if node.type == 'repeat':

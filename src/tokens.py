@@ -87,7 +87,7 @@ t_COMMA			= r","
 t_PLUS			= r"\+"
 t_MINUS			= r"\-"
 t_TIMES			= r"\*"
-t_DIVISION		= r"\\"
+t_DIVISION		= r"/"
 
 t_EQ			= r"\="
 t_NEQ			= r"\<\>"

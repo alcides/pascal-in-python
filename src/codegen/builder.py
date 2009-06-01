@@ -307,8 +307,10 @@ class Writer(object):
 				return builder.mul(v1, v2)
 			elif sign == "/":
 				return builder.fdiv(v1, v2)
-			elif sign == "mod":
+			elif sign == "div":
 				return builder.sdiv(v1, v2)
+			elif sign == "mod":
+				return builder.urem(v1, v2)
 			elif sign in [">",">=","=","<=","<","<>"]:
 				return compare(sign,v1,v2,builder)
 			elif sign == "and":
