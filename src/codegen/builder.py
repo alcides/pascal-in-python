@@ -105,7 +105,6 @@ class Writer(object):
 
 			if function_name in ['write','writeln']:
 				if str(arguments[0].type) == 'double':
-					print "hey"
 					function_name += "real"
 				elif str(arguments[0].type) == 'i32':
 					function_name += "int"
