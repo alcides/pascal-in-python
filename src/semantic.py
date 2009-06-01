@@ -170,6 +170,15 @@ def check(node):
 				if vartype != assgntype:
 					raise Exception, "Variable %s is of type %s and does not support %s" % (varn, vartype, assgntype)
 				
+				
+		elif node.type == 'and_or':
+			op = node.args[0].args[0]
+			for i in range(1,2):
+				a = check(node.args[i])
+				if a != "boolean":
+					raise Exception, "%s requires booleans for both sides." % op
+
+			
 		elif node.type == "op":
 			
 			op = node.args[0].args[0]
@@ -178,7 +187,33 @@ def check(node):
 
 			if vt1 != vt2:
 				raise Exception, "Arguments of operation '%s' must be of the same type. Got %s and %s." % (op,vt1,vt2)
-			return vt1	
+				
+			if op in ['=','<=','>=','>','<','<>']:
+				return 'boolean'
+			else:
+				return vt1	
+				
+		elif node.type == "if":
+			t = check(node.args[0])
+			if t != 'boolean':
+				raise Exception, "If condition requires a bollean"
+			
+		elif node.type == 'for':
+			contexts.append(Context())
+			v = node.args[0].args[0].args[0].lower()
+			set_var(v,'INTEGER')
+			
+			st = node.args[0].args[1].args[0].type.lower()
+			if st != 'integer':
+				raise Exception, 'For requires a integer as a starting value'
+			
+			fv = node.args[2].args[0].type.lower()
+			if fv != 'integer':
+				raise Exception, 'For requires a integer as a final value'
+			
+			check(node.args[3])
+			
+			contexts.pop()
 			
 		elif node.type == "element":
 			
