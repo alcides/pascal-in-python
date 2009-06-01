@@ -19,7 +19,7 @@ var
 
 begin 
 	A := 20; 
-	writeln(A); 
+	writeln(A + 1 * 2); 
 	ScopeInner;
 	A := a + Summation(10);
 	writeln(a);

@@ -208,7 +208,7 @@ class Writer(object):
 			self.contexts[-1].builder = Builder.new(tail)
 			
 		elif ast.type == "repeat":
-			cond = ast.args[1]
+			cond = Node('not',ast.args[1])
 			body = ast.args[0]
 			
 			while_b = Node('while',cond,body)
@@ -286,6 +286,11 @@ class Writer(object):
 
 		elif ast.type in ["sign","and_or"]:
 			return ast.args[0]
+			
+		elif ast.type == 'not':
+			v = self.descend(ast.args[0])
+			builder = self.get_builder()
+			return builder.not_(v)
 
 		elif ast.type == "op":
 			sign = self.descend(ast.args[0])

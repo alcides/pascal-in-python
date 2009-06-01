@@ -176,7 +176,7 @@ def check(node):
 			for i in range(1,2):
 				a = check(node.args[i])
 				if a != "boolean":
-					raise Exception, "%s requires booleans for both sides." % op
+					raise Exception, "%s requires a boolean. Got %s instead." % (op,a)
 
 			
 		elif node.type == "op":
@@ -193,10 +193,14 @@ def check(node):
 			else:
 				return vt1	
 				
-		elif node.type == "if":
-			t = check(node.args[0])
+		elif node.type in ['if','while','repeat']:
+			if node.type == 'repeat':
+				c = 1
+			else:
+				c = 0
+			t = check(node.args[c])
 			if t != 'boolean':
-				raise Exception, "If condition requires a bollean"
+				raise Exception, "%s condition requires a boolean. Got %s instead." % (node.type,t)
 			
 		elif node.type == 'for':
 			contexts.append(Context())
@@ -214,6 +218,9 @@ def check(node):
 			check(node.args[3])
 			
 			contexts.pop()
+			
+		elif node.type == 'not':
+			return check(node.args[0])
 			
 		elif node.type == "element":
 			
