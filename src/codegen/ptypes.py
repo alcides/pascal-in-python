@@ -34,6 +34,6 @@ reverse_translation = ReverseDict(translation)
 				
 defaults = {
 	"INTEGER": 0,
-	"REAL": 0,
+	"REAL": 0.0,
 	"CHAR": '_'
 }
