@@ -1,7 +1,7 @@
 PROGRAM types;
 VAR
-   i : INTEGER;
-   writeint : INTEGER;
+   i : REAL;
 BEGIN
-	WRITEINT(1);
+	i := 1.0;
+	writereal(i);
 END.

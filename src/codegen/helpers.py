@@ -85,7 +85,8 @@ def add_stdio(mod):
 		"printf": mod.add_function(types.function(types.void, (Type.pointer(types.int8, 0),), 1), "printf"),
 		"writeln": create_write(mod,ln=True),
 		"write": create_write(mod),
-		"writeint": create_writeint(mod)		
+		"writeint": create_write_alt('integer',mod),
+		"writereal": create_write_alt('real',mod)		
 	}
 	
 def create_main(mod):
@@ -119,21 +120,30 @@ def create_write(mod,ln=False):
 	builder.ret_void()
 	return f
 
-def create_writeint(mod):
+def create_write_alt(type_,mod):
+	if type_ == 'integer':
+		fname = 'writeint'
+		code = '%d'
+		argtype = types.integer
+	elif type_ == 'real':
+		fname = 'writereal'
+		code = '%f'
+		argtype = types.real
+	
 	printf = mod.get_function_named("printf")
 	
-	funcType = Type.function(Type.void(), [Type.int(32)])  
-	printInt = mod.add_function(funcType, 'writeint')  
+	funcType = Type.function(Type.void(), [argtype])  
+	print_alt = mod.add_function(funcType, fname)  
 
-	bb = printInt.append_basic_block('bb')  
+	bb = print_alt.append_basic_block('bb')  
 	b = Builder.new(bb)  
 	
-	stringConst = c_string(mod,"%d\n")
+	stringConst = c_string(mod,code + "\n")
 	stringConst = pointer(b,stringConst)
 	
-	b.call(printf,[stringConst,printInt.args[0]])
+	b.call(printf,[stringConst,print_alt.args[0]])
 	b.ret_void()
-	return printInt;
+	return print_alt;
 	
 	
 class Block(object):

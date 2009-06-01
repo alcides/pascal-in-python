@@ -17,7 +17,8 @@ contexts = []
 functions = {
 	'write':[("a",'string')],
 	'writeln':[("a",'string')],
-	'writeint':[("a",'integer')]
+	'writeint':[("a",'integer')],
+	'writereal':[("a",'real')]
 }
 
 def check_if_function(var):
@@ -136,9 +137,9 @@ def check(node):
 				raise Exception, "Function %s is expecting %d parameters and got %d" % (fname, len(vargs), len(args))
 			else:
 				for i in range(len(vargs)):
-					if vargs[i][1] != args[i]:
+					if vargs[i][1].lower() != args[i].lower():
 						raise Exception, "Parameter #%d passed to function %s should be of type %s and not %s" % (i+1,fname,vargs[i],args[i])
 				
 				
 		else:
-			print node.type
+			print "semantic missing:", node.type
