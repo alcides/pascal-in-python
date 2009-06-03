@@ -179,7 +179,7 @@ def check(node):
 			return rettype
 			
 		elif node.type == "assign":	
-				varn = check(node.args[0])
+				varn = check(node.args[0]).lower()
 				if is_function_name(varn):
 					vartype = functions[varn][0]
 				else:
@@ -231,6 +231,14 @@ def check(node):
 			t = check(node.args[c])
 			if t != 'boolean':
 				raise Exception, "%s condition requires a boolean. Got %s instead." % (node.type,t)
+			
+			# check body
+			check(node.args[1-c])
+			
+			# check else
+			if len(node.args) > 2:
+				check(node.args[2])
+				
 			
 		elif node.type == 'for':
 			contexts.append(Context())

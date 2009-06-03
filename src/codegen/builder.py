@@ -113,6 +113,12 @@ class Writer(object):
 			function = self.module.get_function_named(function_name)
 			return builder.call(function,arguments)
 			
+		elif ast.type == "parameter_list":
+			l = []
+			l.extend(self.descend(ast.args[0]))
+			l.extend(self.descend(ast.args[1]))
+			return l
+			
 		elif ast.type == "parameter":
 			c = ast.args[0]
 			if c.type == "identifier":

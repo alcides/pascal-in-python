@@ -113,7 +113,7 @@ def p_type(t):
 	| TINTEGER
 	| TCHAR
 	| TSTRING """
-	t[0] = Node('type',t[1])
+	t[0] = Node('type',t[1].lower())
 	
 def p_statement_part(t):
 	"""statement_part : BEGIN statement_sequence END"""
@@ -262,12 +262,12 @@ def p_element(t):
 		t[0] = Node('element',t[2])
 		
 def p_function_call_inline(t):
-	""" function_call_inline : identifier param_list"""
-	t[0] = Node('function_call_inline',t[1],t[2])
+	""" function_call_inline : identifier LPAREN param_list RPAREN"""
+	t[0] = Node('function_call_inline',t[1],t[3])
 	
 def p_identifier(t):
 	""" identifier : IDENTIFIER """
-	t[0] = Node('identifier',t[1])
+	t[0] = Node('identifier',str(t[1]).lower())
 	
 def p_real(t):
 	""" real : REAL """
