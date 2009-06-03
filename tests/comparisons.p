@@ -9,8 +9,12 @@ begin
 		writeln(2);
 	writeln(3);
 	
+	
+	writeln("----");
 	for	a := 1 to 10 do
 		writeln(a);
+	writeln("----");		
+		
 		
 	while a > 1 do
 	begin

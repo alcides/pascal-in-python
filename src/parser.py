@@ -23,9 +23,11 @@ def get_input(file=False):
 	return data
 
 def main(options={},filename=False):
-	yacc.yacc()
+	logger = yacc.NullLogger()
+	yacc.yacc(debug = logger, errorlog= logger )
+	
 	data = get_input(filename)
-	ast =  yacc.parse(data,lexer = lex.lex())	
+	ast =  yacc.parse(data,lexer = lex.lex(nowarn=1))	
 	
 	if options.graph:
 		from codegen.graph import graph
