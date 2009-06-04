@@ -1,0 +1,28 @@
+h1. Compilador de KPascal
+
+Alcides Fonseca
+
+2006124656
+
+amaf@student.dei.uc.pt
+
+
+
+h2. Introdução
+
+
+h2. Utilização
+
+
+h2. Análise Sintática
+
+h3. Lex
+
+h3. Yacc
+
+
+h2. Análise Semântica
+
+
+h2. Geração de Código
+
