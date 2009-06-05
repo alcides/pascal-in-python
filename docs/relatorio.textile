@@ -70,16 +70,145 @@ Uma feature extra do compilador é o facto de gerar um gráfico com a AST. Para 
 
 h2. Análise Sintática
 
-Na análise sintática foi usado o Lex e Yacc, um conjunto de ferramentas que funcionam como um parser LALR, que permite o parsing de gramáticas livres de contexto.
+Na análise sintática foi usado o Lex e Yacc, um conjunto de ferramentas que funcionam como um parser LALR, que permite o parsing de gramáticas livres de contexto com uma eficiência muito boa.
 
 h3. Lex
 
-O ficheiro @tokens.py@ contem a definição dos vários tokens da linguagem, através de expressões regulares. Estes passam pelos vários caracteres especiais (ponto e virgula, virgula, dois pontos, ponto, chavetas, sinais de soma, multiplicação, etc..., parentisis, tipos de variáveis (real, integer, string), ifs, then, elses, funções, procedimentos, etc...).
+O ficheiro @tokens.py@ contem a definição dos vários tokens da linguagem, através de expressões regulares. Estes passam pelos vários caracteres especiais (ponto e virgula, virgula, dois pontos, ponto, chavetas, sinais de soma, multiplicação, etc..., parentisis, tipos de variáveis (real, integer, string), os própios tipos, ifs, then, elses, funções, procedimentos, etc...).
 
 No código existe um tuplo tokens que tem a listagem completa destes tokens.
 
 h3. Yacc
 
+A gramática que implementei é uma subgramática daquela referida no enunciado, com várias modificações para se arquear melhor ao problema mais concreto apresentado.
+
+
+<pre>
+program : header SEMICOLON block DOT
+</pre><pre>
+header : PROGRAM identifier
+</pre><pre>
+block : variable_declaration_part procedure_or_function statement_part
+</pre><pre>
+variable_declaration_part : VAR variable_declaration_list
+	|
+</pre><pre>
+variable_declaration_list : variable_declaration variable_declaration_list
+	| variable_declaration
+</pre><pre>
+variable_declaration : identifier COLON type SEMICOLON
+</pre><pre>
+procedure_or_function : proc_or_func_declaration SEMICOLON procedure_or_function
+	|
+</pre><pre>
+proc_or_func_declaration : procedure_declaration
+    | function_declaration
+</pre><pre>
+procedure_declaration : procedure_heading SEMICOLON block
+</pre><pre>
+procedure_heading : PROCEDURE identifier 
+	| PROCEDURE identifier LPAREN parameter_list RPARE
+</pre><pre>
+function_declaration : function_heading SEMICOLON block
+</pre><pre>
+function_heading : FUNCTION type
+ 	| FUNCTION identifier COLON type
+	| FUNCTION identifier LPAREN parameter_list RPAREN COLON type
+	
+</pre><pre>
+parameter_list : parameter COMMA parameter_list
+	| parameter
+</pre><pre>
+parameter : identifier COLON type
+</pre><pre>
+type : TREAL 
+	| TINTEGER
+	| TCHAR
+	| TSTRING
+</pre><pre>
+statement_part : BEGIN statement_sequence END
+</pre><pre>
+statement_sequence : statement SEMICOLON statement_sequence
+	| statement
+</pre><pre>
+statement : assignment_statement
+	| statement_part
+	| if_statement
+	| while_statement
+	| repeat_statement
+	| for_statement
+	| procedure_or_function_call
+	|
+</pre><pre>
+procedure_or_function_call : identifier LPAREN param_list RPAREN
+	| identifier
+</pre><pre>
+param_list : param_list COMMA param
+	 | param
+</pre><pre>
+param : expression 
+</pre><pre>
+if_statement : IF expression THEN statement ELSE statement
+	| IF expression THEN statement
+</pre><pre>
+while_statement : WHILE expression DO statement
+</pre><pre>
+repeat_statement : REPEAT statement UNTIL expression
+</pre><pre>
+for_statement : FOR assignment_statement TO expression DO statement
+	| FOR assignment_statement DOWNTO expression DO statement
+</pre><pre>
+assignment_statement : identifier ASSIGNMENT expression
+</pre><pre>
+expression : expression and_or expression_m
+	| expression_m
+</pre><pre>
+expression_m : expression_s
+	| expression_m sign expression_s
+</pre><pre>	
+expression_s : element 
+	| expression_s psign element
+</pre><pre>
+and_or : AND
+	| OR
+</pre><pre>	
+psign : TIMES
+	| DIVISION
+</pre><pre>	
+sign : PLUS
+	| MINUS
+	| DIV
+	| MOD
+	| EQ
+	| NEQ
+	| LT
+	| LTE
+	| GT
+	| GTE
+	
+</pre><pre>
+	
+element : identifier
+	| real
+	| integer
+	| string
+	| char
+	| LPAREN expression RPAREN
+	| NOT element
+	| function_call_inline
+	
+</pre><pre>
+	
+function_call_inline : identifier LPAREN param_list RPAREN
+	
+</pre>
+
+
+h3. Geração da AST
+
+A nossa AST é composta por nós. Cada nó pode ter um tipo, e um número infinito de argumentos de qualquer tipo. Aqui o dinamismo de Python torna a organização muito mais simples, do que a criação de inúmeras estruturas específicas como seria necessário em C.
+
+Por cada regra (ou quase!) é gerado um nó de um certo tipo e com vários elementos. No caso do While, por exemplo, tem um filho que é a condição e outro para o corpo do while.
 
 
 h2. Análise Semântica
