@@ -113,8 +113,7 @@ function_declaration : function_heading SEMICOLON block
 </pre><pre>
 function_heading : FUNCTION type
  	| FUNCTION identifier COLON type
-	| FUNCTION identifier LPAREN parameter_list RPAREN COLON type
-	
+	| FUNCTION identifier LPAREN parameter_list RPAREN COLON type	
 </pre><pre>
 parameter_list : parameter COMMA parameter_list
 	| parameter
@@ -185,9 +184,7 @@ sign : PLUS
 	| LTE
 	| GT
 	| GTE
-	
 </pre><pre>
-	
 element : identifier
 	| real
 	| integer
@@ -195,12 +192,9 @@ element : identifier
 	| char
 	| LPAREN expression RPAREN
 	| NOT element
-	| function_call_inline
-	
+	| function_call_inline	
 </pre><pre>
-	
-function_call_inline : identifier LPAREN param_list RPAREN
-	
+function_call_inline : identifier LPAREN param_list RPAREN	
 </pre>
 
 
@@ -208,11 +202,48 @@ h3. Geração da AST
 
 A nossa AST é composta por nós. Cada nó pode ter um tipo, e um número infinito de argumentos de qualquer tipo. Aqui o dinamismo de Python torna a organização muito mais simples, do que a criação de inúmeras estruturas específicas como seria necessário em C.
 
-Por cada regra (ou quase!) é gerado um nó de um certo tipo e com vários elementos. No caso do While, por exemplo, tem um filho que é a condição e outro para o corpo do while.
+Por cada regra (ou quase!) é gerado um nó de um certo tipo e com vários elementos. No caso do While, por exemplo, tem um filho que é a condição e outro para o corpo do While.
 
 
 h2. Análise Semântica
 
+Tal como a geração de código, a análise semântica baseia-se numa pilha de contextos. Cada contexto pode ter várias variáveis, e para cada uma é guardado também o número de vezes que é usada (Isto para emitir um warning caso uma variável nunca seja usada).
+
+Existe também uma tabela de funções onde é guardado o nome das funções, o tipo que devolve e o tipo dos parâmetros. Esta tabela é inicializada com as funções standard (writes).
+
+Sempre que entramos num novo bloco (seja programa, ciclo for, função, procedimento), é criado um novo contexto que se adiciona a pilha (e removido no final). Isto permite que sempre que estamos dentro de um bloco, acedemos as variáveis desse bloco e a todas as dos blocos em que está dentro (No entanto quando se adiciona uma variável, é sempre ao bloco de topo).
+
+Este esquema permite fazer uma análise semântica bastante boa. Quando definimos uma variável, vemos se ela existe ou se existe uma função com o mesmo nome, e levantamos uma excepção que ela não existe.
+
+Se usamos uma variável e ela não existe em nenhum dos contextos, podemos informar o utilizador que a variável não foi declarada. Ou pelo contrário se estamos a declarar uma que já existe, também levantamos erro.
+
+Quando chamamos uma função, e ela não existe na nossa tabela, levantamos uma excepção em como ela não existe. Caso exista vamos verificar o número e tipo de parâmetros, visto que têm de bater certo.
+
+Quer em atribuições, quer em operações, quer mesmo em chamada de funções, verificamos se os tipos são suportados (cada análise é feita recursivamente). É ainda feita uma verificação extra nos ifs, whiles e repeats que necessitam de uma condição que retorne um boolean.
+
+Em relação ao For, basta verificar se os valores de início e final são inteiros.
+
 
 h2. Geração de Código
 
+Tal como a Análise Semântica, a geração do código é feita percorrendo recursivamente a árvore. Existe também uma pilha de contextos da mesma forma, mas esta tem mais informação. Tem a indicação do nome da função/bloco em que se está e do construtor a ser usado. No caso de funções, guarda ainda os nomes dos parâmetros.
+
+Ao percorrer a árvore caso encontre um programa, cria esse bloco e adiciona as funções standard também. E percorre recursivamente o bloco.
+
+A maioria da geração de código é bastante linear, criando variáveis, executando operações, etc... De seguida serão apresentados os aspectos mais importantes da geração de código.
+
+As instruções IF são feitas com branches condicionais para o ponto do código do then, ou do else caso seja falso.
+
+O ciclo while é feito com um loop (através de branches) com uma condição no início (branch condicional) que caso seja verdadeira, salta para o final do loop.
+
+O ciclo repeat e for são feitos à custa do while, em que é criada uma mini-árvore com a inicialização, condição e incremente (no caso do for), e com o corpo, condição, corpo no caso do repeat. Essas árvores vão também ser percorridas de igual forma, gerando o código correcto.
+
+Em relação às funções, está a ser usado o suporte de assembly para funções, bastando apenas definir dos tipos e chamar que é devolvido o valor (aliás, é assim que se está a usar o printf). No entanto se fosse necessária a sua implementação, criava-se uma variável auxiliar para o valor de retorno, outras para os parâmetros e outra ainda para a label de onde foi chamada, era usado um branch que iria executar o código e guardar o resultado na variável auxiliar e segue o branch para a label que sucede à chamada do código.
+
+h2. Conclusão
+
+No desenvolvimento deste trabalho aprendi a realizar as várias fases de um compilador, desde o parsing (definição de tokens e de gramáticas), de construção de uma AST adequada ao problema, a fazer validação semântica, detectar os vários erros possíveis, e finalmente gerar o código necessário para a árvore ser passível de execução.
+
+Para além dos objectivos básicos, explorei também métodos dinâmicos de gerar e percorrer a árvore (graças à utilização da linguagem Python). Ao usar a ferramenta LLVM percebi melhor como funciona a geração de código em assembly, um pouco diferente de C, e estudei as formas de interpretar o código, de fazer certas optimizações como tail calls e JIT. 
+
+Deu-me bastante satisfação investigar estes aspectos, visto que hoje em dia as linguagens interpretadas têm cada vez mais sucesso e tornam-se indispensáveis ao ponto da maior parte da investigação a nível de compiladores se centrar no JIT compilation, que permite browsers mais rápidos como o Chrome (com o V8), Safari (com o SquirrelFish) ou o Firefox (com o TraceMonkey) correr código interpretado (JavaScript) a níveis que equiparam linguagens compiladas com o C.
