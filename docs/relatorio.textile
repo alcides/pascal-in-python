@@ -1,25 +1,78 @@
 h1. Compilador de KPascal
 
-Alcides Fonseca
-
-2006124656
-
+p>. Alcides Fonseca <br />
+2006124656 <br />
 amaf@student.dei.uc.pt
-
 
 
 h2. Introdução
 
+Hoje em dia o desenvolvimento de software é feito em linguagens de programação (de mais ou menos alto nível). A produtividade de um programador aumenta bastante quando não tem de se preocupar com aspectos físicos da máquina para que quer trabalhar, mas com o domínio do problema que quer resolver. O compilador é o que permite transformar essas linguagens de alto nível em código que vai ser executado no processador.
+
+*Pascal* é uma linguagem de programação procedimental e imperativa. A linguagem é relativamente simples e promove uma estruturação do código, aspecto bastante importante na época em que foi publicada (1970). Os vários elementos da linguagem são comuns a muitas outras: a existência de if/then/elses, ciclos (while,repeat,for) e funções e procedimentos, que promovem o conceito DRY - _don't repeat yourself_.
+
+h2. Arquitectura
+
+Tradicionalmente os compiladores são escritos numa linguagem de baixo nível (normalmente C) que faz o parsing do programa input, analisa-o e converte-o para código máquina. Actualmente as linguagens estão cada vez mais próximas dos humanos, e este processo já não é exactamente deste modo. Surgiram virtual machines que correm um bytecode específico (os exemplos mais populares são o JavaVM ou .NET, mas linguagens como Python, Perl e Ruby têm uma pequena máquina virtual também), e já nem sempre são compiladores, mas sim interpretadores, visto que executam cada linha individualmente à medida que correm o input.
+
+Neste projecto optei por não compilar para a linguagem C, mas para assembly (primeiro um bytecode intermeiário, um assembly de mais alto nível) que corre na plataforma x86 (testado no meu MacBook Intel), mas que também é portável para arquitecturas ARM. Essa geração recorre ao projecto LLVM (http://llvm.org/) e aos bindings para Python(http://mdevan.nfshost.com/llvm-py/).
+
+Em relação ao parsing, segui o sugerido nas aulas, usando a dupla Lex e Yacc, mas escrevendo o código em Python, que permite uma maior preocupação com a estrutura do que C (principalmente por ter optado por uma arquitectura orientada a objectos).
+
+A AST usada segue uma estrutura minimalista derivada do facto de Python ser uma linguagem dinâmica e que será detalhada na sua secção.
 
 h2. Utilização
 
+O compilador é um programa Python que é executado na linha de comandos. Para o correr é primeiro necessário ter algumas dependências:
+
+* Python (2.5.4)
+* PLY (http://pypi.python.org/pypi/ply/3.1)
+* LLVM (http://llvm.org)
+* LLVM-py (http://mdevan.nfshost.com/llvm-py/download.html)
+
+Uma vez instaladas, bastará correr na linha de comandos nesta pasta: @./kpascal --help@
+
+<pre>
+	KPascal (master) >>> ./kpascal -help
+	Usage: kpascal [options]
+
+	Options:
+	  -h, --help            show this help message and exit
+	  -o <filename>, --out=<filename>
+	                        write output to <filename>
+	  -e, --emit            prints the bytecode to the screen
+	  -g, --graph           shows the AST graph
+	  -i, --instant         runs the result instead of saving
+	
+</pre>
+
+h3. Ficheiro de input
+
+Poderemos especificar o ficheiro de input chamando @./kpascal ficheiro.p@ que irá compilar esse ficheiro. Caso não receba nenhum parametro, irá ler do STDIN, o que permite receber código fonte a partir de outras ferramentas UNIX. Um exemplo seria @./kpascal < ficheiro.p@ ou @cat ficheiro.p | ./kpascal@.
+
+h3. Ficheiro de ouput
+
+Tal como o GCC, se não for especificado nenhum ficheiro binário resultante, será usado o nome "a.out". No entanto poderemos usar a flag -o para lhe dar o nome: @./kpascal -o ficheiro.out ficheiro.p@.
+
+h3. Executar
+
+Uma alternativa a compilar o programa, é apenas executa-lo. Este modo é um hibrido entre um compilador e um intepretador, visto que verifica o ficheiro todo antes de o executar, mas vai executando o código à medida que é gerado, ao contrário de um compilador tradicional. Este modo só é possível graças à utilização do LLVM e é uma mais valia em termos de tempo.
+
+@./kpascal -i ficheiro.p@
+
+h3. Mostrar bytecode
+
+A nível de debugging é importante saber o que o compilador está a produzir. Ao chamar o programa @./kpascal -e ficheiro.p@ ele vai imprimir no ecrã uma representação humana do código assembly.
+
+h3. Mostrar árvore AST.
+
+Uma feature extra do compilador é o facto de gerar um gráfico com a AST. Para tal basta usar o comando @./kpascal -g ficheiro.p@ e ele vai gerar um ficheiro.p.png com o gráfico da árvore.
 
 h2. Análise Sintática
 
 h3. Lex
 
 h3. Yacc
-
 
 h2. Análise Semântica
 
