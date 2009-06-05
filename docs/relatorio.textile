@@ -70,9 +70,17 @@ Uma feature extra do compilador é o facto de gerar um gráfico com a AST. Para 
 
 h2. Análise Sintática
 
+Na análise sintática foi usado o Lex e Yacc, um conjunto de ferramentas que funcionam como um parser LALR, que permite o parsing de gramáticas livres de contexto.
+
 h3. Lex
 
+O ficheiro @tokens.py@ contem a definição dos vários tokens da linguagem, através de expressões regulares. Estes passam pelos vários caracteres especiais (ponto e virgula, virgula, dois pontos, ponto, chavetas, sinais de soma, multiplicação, etc..., parentisis, tipos de variáveis (real, integer, string), ifs, then, elses, funções, procedimentos, etc...).
+
+No código existe um tuplo tokens que tem a listagem completa destes tokens.
+
 h3. Yacc
+
+
 
 h2. Análise Semântica
 
